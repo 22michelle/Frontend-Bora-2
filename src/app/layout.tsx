@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
+import { ToastContainer } from "react-toastify";
 
 const dmSans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Light Saas Landing Page",
-  description: "Template created by Frontend Tribe",
+  title: "Bora",
+  description: "May your connections be stronger",
 };
 
 export default function RootLayout({
@@ -18,10 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="relative">
       <head>
-        <link rel="shortcut icon" href="../assets/avatar-1.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
       </head>
-      <body className={clsx(dmSans.className, "antialiased bg-[#EAEEFE]")}>
+      <body className={clsx(dmSans.className, "antialiased bg-[#EAEEFE] text-black")}>
         {children}
+        <ToastContainer />
       </body>
     </html>
   );

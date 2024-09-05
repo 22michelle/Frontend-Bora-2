@@ -1,9 +1,10 @@
 "use client";
-import ArrowIcon from "@/assets/arrow-right.svg";
-import Network from "@/assets/network.svg";
-import Circle from "@/assets/circle.png";
-import Chip from "@/assets/chip-credit.svg";
+import ArrowIcon from "@/app/public/assets/arrow-right.svg";
+import Network from "@/app/public/assets/network.svg";
+import Circle from "@/app/public/assets/circle.png";
+import Chip from "@/app/public/assets/chip-credit.svg";
 import Image from "next/image";
+import React, { useState } from 'react';
 import { motion } from "framer-motion";
 
 export const Hero = () => {

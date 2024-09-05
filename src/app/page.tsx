@@ -1,19 +1,22 @@
-import { SignUpFree } from "@/sections/SignUpFree";
-import { Footer } from "@/sections/Footer";
-import { Header } from "@/sections/Header";
-import { Hero } from "@/sections/Hero";
-import { Testimonials } from "@/sections/Testimonials";
-import ContactUs from "@/sections/ContactUs";
+import { Header } from "@/app/components/Header";
+import { Footer } from "@/app/components/Footer";
+import { Hero } from "@/app/components/Hero";
+import { Feature } from "@/app/components/Feature";
+import { Testimonials } from "@/app/components/Testimonials";
+import ContactUs from "@/app/components/ContactUs";
+import { SignUpFree } from "@/app/components/SignUpFree";
 
 export default function Home() {
   return (
-    <>
-      <Header />
+    <main>
+      <Header isRegisterPage={false} />
       <Hero />
-      <Testimonials/>
-      <ContactUs/>
-      <SignUpFree/>
-      <Footer/>
-    </>
+      <Feature id="features" />
+      {/* <About id="about" /> */}
+      <Testimonials id="tesminonials" />
+      <ContactUs id="contact" />
+      <SignUpFree />
+      <Footer />
+    </main>
   );
-}
+};

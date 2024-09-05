@@ -1,12 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import emailjs from "emailjs-com";
 import Image from "next/image";
-import noddle from "@/assets/noodle.png";
+import noddle from "@/app/public/assets/noodle.png";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { toast } from "react-toastify";
 
-const FormHelp: React.FC = () => {
+interface FormHelpProps {
+  id?: string; // Optional id prop
+}
+
+const FormHelp: React.FC<FormHelpProps> = ({ id }) => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -35,12 +39,17 @@ const FormHelp: React.FC = () => {
       )
       .then(
         (response) => {
-          console.log(
-            "Email successfully sent!",
-            response.status,
-            response.text
-          );
-          alert("Message sent successfully");
+          console.log("Email successfully sent!", response.status, response.text);
+          toast.success("Message sent successfully!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
           setFormData({
             firstName: "",
             lastName: "",
@@ -50,13 +59,21 @@ const FormHelp: React.FC = () => {
         },
         (error) => {
           console.error("Error sending email", error);
-          alert("Error sending message, please try again later");
+          toast.error("Error sending message, please try again later", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
         }
       );
   };
 
   const sectionRef = useRef(null);
-
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
@@ -65,7 +82,7 @@ const FormHelp: React.FC = () => {
   const translateY = useTransform(scrollYProgress, [0, 1], [150, -150]);
 
   return (
-    <section className="bg-gradient-to-b from-[#D2DCFF] to-white py-24 overflow-clip">
+    <section id={id} className="bg-gradient-to-b from-[#D2DCFF] to-white py-24 overflow-clip">
       <div className="container mx-auto px-4">
         <div className="section-heading text-center">
           <h2 className="section-title mt-5 font-bold">Contact Us</h2>
@@ -77,8 +94,7 @@ const FormHelp: React.FC = () => {
               <h2 className="section-subtitle text-[30px]">Lets talk</h2>
             </div>
             <p className="section-description flex justify-start">
-              Ask about our platform, implementation, or anything. Our highly
-              trained reps are standing by, ready to help.
+              Ask about our platform, implementation, or anything. Our highly trained reps are standing by, ready to help.
             </p>
             <div className="relative -left-[190px] top-[-17px] mb-4">
               <Image src={noddle} alt="noddle" width={360} />
