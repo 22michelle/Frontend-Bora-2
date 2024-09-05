@@ -13,6 +13,10 @@ export const Header = ({ isRegisterPage = false, isLoginPage = false }) => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <header className="sticky top-0 backdrop-blur-sm z-50">
       <div className="py-3">
@@ -26,7 +30,6 @@ export const Header = ({ isRegisterPage = false, isLoginPage = false }) => {
               className="cursor-pointer"
             />
           </Link>
-          {/* Botón del menú para la versión responsive */}
           <button
             className="md:hidden"
             onClick={toggleMenu}
@@ -35,7 +38,6 @@ export const Header = ({ isRegisterPage = false, isLoginPage = false }) => {
             <MenuIcon className="h-5 w-5" />
           </button>
 
-          {/* Menú de navegación en versión desktop */}
           <nav className="hidden md:flex items-center gap-6">
             {isRegisterPage ? (
               <>
@@ -74,30 +76,30 @@ export const Header = ({ isRegisterPage = false, isLoginPage = false }) => {
               <nav className="flex flex-col items-center gap-4">
                 {isRegisterPage ? (
                   <>
-                    <Link href="/">Home</Link>
-                    <Link href="/login" className="underline">
+                    <Link href="/" onClick={closeMenu}>Home</Link>
+                    <Link href="/login" className="underline" onClick={closeMenu}>
                       Log In
                     </Link>
                   </>
                 ) : isLoginPage ? (
                   <>
-                    <Link href="/">Home</Link>
-                    <Link href="/signup" className="underline">
+                    <Link href="/" onClick={closeMenu}>Home</Link>
+                    <Link href="/signup" className="underline" onClick={closeMenu}>
                       Sign Up
                     </Link>
                   </>
                 ) : (
                   <>
-                    <Link href="#features">Features</Link>
-                    <Link href="#about">About</Link>
-                    <Link href="#testimonials">Testimonials</Link>
-                    <Link href="#contact">Contact Us</Link>
-                    <Link href="/signup" className="underline">
+                    <Link href="#features" onClick={closeMenu}>Features</Link>
+                    <Link href="#about" onClick={closeMenu}>About</Link>
+                    <Link href="#testimonials" onClick={closeMenu}>Testimonials</Link>
+                    <Link href="#contact" onClick={closeMenu}>Contact Us</Link>
+                    <Link href="/signup" className="underline" onClick={closeMenu}>
                       Sign Up
                     </Link>
                   </>
                 )}
-                <button className="bg-black text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight">
+                <button className="bg-black text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight" onClick={closeMenu}>
                   Get the app
                   <Download className="h-4 w-4 ml-2" />
                 </button>
