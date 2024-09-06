@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import Spinner from "react-bootstrap/Spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { Header } from '../components/Header';
-import { Footer } from '../components/Footer';
+import { Header } from '@/app/components/Header';
+import { Footer } from '@/app/components/Footer';
 import Link from "next/link";
 
 interface FormData {
@@ -69,6 +69,10 @@ export default function Login() {
         toast.error(responseData.message || "Login failed");
       } else {
         toast.success(responseData.message || "Login Successful");
+
+        localStorage.setItem("userId", responseData.data._id);
+        localStorage.setItem("userName", responseData.data.name);
+        localStorage.setItem("userEmail", responseData.data.email);
         router.push("/dashboard"); 
       }
     } catch (error) {

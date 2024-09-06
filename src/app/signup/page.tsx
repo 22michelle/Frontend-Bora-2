@@ -101,7 +101,7 @@ export default function SignUp() {
 
   return (
     <>
-    <Header isRegisterPage={true} />
+    <Header isSignupPage={true} />
     <section
     className="py-5 overflow-clip relative">
         <div className="container">
