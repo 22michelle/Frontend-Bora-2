@@ -162,7 +162,7 @@ const FormHelp: React.FC<FormHelpProps> = ({ id }) => {
             </div>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md w-full"
+              className="btn btn-primary hover:bg-[#001E80] text-white font-medium py-2 px-4 rounded-md w-full"
             >
               Send Message
             </button>

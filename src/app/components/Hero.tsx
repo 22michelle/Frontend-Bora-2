@@ -1,11 +1,10 @@
 "use client";
 import ArrowIcon from "@/app/public/assets/arrow-right.svg";
 import Network from "@/app/public/assets/network.svg";
-import Circle from "@/app/public/assets/circle.png";
 import Chip from "@/app/public/assets/chip-credit.svg";
-import Image from "next/image";
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export const Hero = () => {
   return (
@@ -23,9 +22,10 @@ export const Hero = () => {
               May your connections be stronger
             </p>
             <div className="flex gap-1 items-center mt-[30px]">
+              <Link href="/signup">
               <button className="btn btn-primary border-none">
                 Get started
-              </button>
+              </button></Link>
               <button className="btn btn-text border-black gap-1">
                 <span>How it works?</span> <ArrowIcon className="h-5 w-5" />
               </button>
@@ -38,9 +38,6 @@ export const Hero = () => {
               <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
               <div className="flex justify-end items-center relative z-10">
                 <span className="text-white text-lg font-bold">Bora</span>
-                <div className="flex justify-end">
-                  <Image src={Circle} alt="circle" className="w-12 min-h-12" />
-                </div>
               </div>
               <div className="relative z-10">
                 <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
