@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image"; 
 import React from 'react';
+import Link from "next/link";
 
 export const SignUpFree = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -55,7 +56,10 @@ export const SignUpFree = () => {
           </motion.div>
         </div>
         <div className="flex gap-2 mt-10 justify-center">
-          <button className="btn btn-primary gap-2">Get Started</button>
+        <Link href="/signup">
+              <button className="btn btn-primary hover:bg-[#001E80] border-none">
+                Get started
+              </button></Link>
           <button className="btn border-black flex items-center">
             <span className="me-1">How it works?</span>
             <ArrowRight className="h-5 w-5" width={20} height={20} />
