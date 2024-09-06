@@ -326,7 +326,7 @@ export default function Dashboard() {
           <button className="bg-yellow-500 text-white py-2 px-4 rounded-lg shadow hover:bg-yellow-600 transition duration-300" onClick={() => handleShowModal('withdraw')}>
             Withdraw Money
           </button>
-        </div>
+        </div> 
 
     {/* Send Money Modal */}
     {showSendModal && (
