@@ -9,7 +9,7 @@ import { SignUpFree } from "@/app/components/SignUpFree";
 export default function Home() {
   return (
     <main>
-      <Header isRegisterPage={false} />
+      <Header isSignupPage={false} />
       <Hero />
       <Feature id="features" />
       {/* <About id="about" /> */}
