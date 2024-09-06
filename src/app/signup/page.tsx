@@ -176,13 +176,13 @@ export default function SignUp() {
           </div>
 
           <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r btn btn-primary hover:bg-[#001E80] text-white py-2 rounded-lg shadow-md transition-colors duration-300"
-              disabled={loading}
-            >
-              {loading ? <Spinner animation="border" size="sm" /> : "Sign Up"}
-            </button>
+          <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r btn btn-primary hover:bg-[#001E80] text-white py-2 rounded-lg shadow-m transition-colors duration-300 flex items-center justify-center"
+                  disabled={loading}
+                >
+               {loading ? <div className="spinner"></div> : "Sign Up"}
+               </button>
           </div>
 
           <p className="text-center text-sm mt-4">
