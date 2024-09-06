@@ -23,7 +23,7 @@ export const Hero = () => {
             </p>
             <div className="flex gap-1 items-center mt-[30px]">
               <Link href="/signup">
-              <button className="btn btn-primary border-none">
+              <button className="btn btn-primary hover:bg-[#001E80] border-none">
                 Get started
               </button></Link>
               <button className="btn btn-text border-black gap-1">
