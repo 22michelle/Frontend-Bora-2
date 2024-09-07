@@ -261,11 +261,12 @@ export default function Dashboard() {
         ) : userData ? (
           <div className="flex flex-col md:flex-row justify-center items-start w-full">
             {/* Credit Card */}
-            <div className="md:w-1/4 sm:w-[110%] relative">
+            <div className="md:w-1/4 sm:w-[100%] relative">
               <motion.div className="max-w-lg mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-8 relative overflow-hidden">
                 <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
                 <div className="flex justify-end items-center relative z-10">
                   <span className="text-white text-lg font-bold">Bora</span>
+                  <Image src={Logo} alt="Logo" className="h-10 w-10" />
                 </div>
                 <div className="relative z-10">
                   <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
@@ -282,7 +283,7 @@ export default function Dashboard() {
                     <span className="text-white text-lg font-bold">
                       ${formatNumber(userData.balance)}
                     </span>
-                    <div className="flex justify-between items-center mt-1">
+                    <div className="flex justify-between items-center mt-1 gap-10">
                       <span className="text-white">MetaBalance
                         <br />
                         {formatNumber(userData.value)}
@@ -291,8 +292,10 @@ export default function Dashboard() {
                         <br />
                         {formatNumber(userData.public_rate)}%
                       </span>
-                      <Network className="h-4 w-4 ml-2 transform rotate-45" />
                     </div>
+                    <div className="flex justify-end mt-3">
+                  <Network className="h-4 w-4 ml-2 transform rotate-45" />
+                  </div>
                   </div>
                 </div>
               </motion.div>

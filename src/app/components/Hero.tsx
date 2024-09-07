@@ -5,6 +5,8 @@ import Chip from "@/app/public/assets/chip-credit.svg";
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
+import Logo from "@/app/public/assets/Logo2.png"
 
 export const Hero = () => {
   return (
@@ -38,6 +40,7 @@ export const Hero = () => {
               <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
               <div className="flex justify-end items-center relative z-10">
                 <span className="text-white text-lg font-bold">Bora</span>
+                <Image src={Logo} alt="Logo" className="h-10 w-10" />
               </div>
               <div className="relative z-10">
                 <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
@@ -48,14 +51,24 @@ export const Hero = () => {
                 <br />
                 <div className="mt-4">
                   <span className="text-white text-sm font-bold">
-                    **** **** **** 9430
+                    **** **** 9430
                   </span>
+                  <h1 className="text-white">Account Balance</h1>
+                  <span className="text-white">5000</span>
                 </div>
                 <div className="mt-4">
-                  <span className="text-white text-sm">NAME SURNAME</span>
                   <div className="flex justify-between items-center mt-1">
-                    <span className="text-white">02/24</span>
-                    <Network className="h-4 w-4 ml-2 transform rotate-45" />
+                  <span className="text-white">MetaBalance
+                        <br />
+                        5000
+                      </span>
+                      <span className="text-white">Public_Rate
+                        <br />
+                        10%
+                      </span>
+                  </div>
+                  <div className="flex justify-end mt-3">
+                  <Network className="h-4 w-4 ml-2 transform rotate-45" />
                   </div>
                 </div>
               </div>
