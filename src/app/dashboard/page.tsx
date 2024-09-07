@@ -17,6 +17,13 @@ import {
   Legend,
 } from 'chart.js';
 import { toast } from 'react-toastify';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowUp,
+  faArrowDown,
+} from "@fortawesome/free-solid-svg-icons";
+import Logo from "@/app/public/assets/Logo2.png"
+import Image from 'next/image';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -276,7 +283,14 @@ export default function Dashboard() {
                       ${formatNumber(userData.balance)}
                     </span>
                     <div className="flex justify-between items-center mt-1">
-                      <span className="text-white">02/24</span>
+                      <span className="text-white">MetaBalance
+                        <br />
+                        {formatNumber(userData.value)}
+                      </span>
+                      <span className="text-white">Public_Rate
+                        <br />
+                        {formatNumber(userData.public_rate)}%
+                      </span>
                       <Network className="h-4 w-4 ml-2 transform rotate-45" />
                     </div>
                   </div>
@@ -304,26 +318,12 @@ export default function Dashboard() {
 
             {/* Additional Cards Section */}
             <div className="mt-10 md:mt-0 md:w-1/3 p-4">
-              <h2 className="text-xl font-bold mb-4">Additional Information</h2>
+              <h2 className="text-xl font-bold mb-4">Transaction History</h2>
               <div className="grid grid-cols-1 gap-4">
                 {/* Example Card 1 */}
                 <div className="bg-white rounded-lg shadow-md p-4">
                   <h3 className="font-bold">Recent Transactions</h3>
                   <p>View your recent transactions here.</p>
-                </div>
-                {/* Example Card 2 */}
-                <div className="bg-white rounded-lg shadow-md p-4">
-                  <h3 className="font-bold">Value</h3>
-                  <p className='section-title'>
-                  {formatNumber(userData.value)}
-                  </p>
-                </div>
-                {/* Example Card 3 */}
-                <div className="bg-white rounded-lg shadow-md p-4">
-                  <h3 className="font-bold">Public_Rate</h3>
-                  <p className='section-title'>
-                   {formatNumber(userData.public_rate)}%
-                  </p>
                 </div>
               </div>
             </div>
@@ -334,14 +334,17 @@ export default function Dashboard() {
 
         {/* Action Buttons */}
         <div className="mt-10 flex justify-center space-x-4">
-          <button className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-600 transition duration-300" onClick={() => handleShowModal('send')}>
+          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadowtransition duration-300" onClick={() => handleShowModal('send')}>
             Send Money
+            <Image src={Logo} alt='Logo' className="h-5 w-5 ml-2"/>
           </button>
-          <button className="bg-green-500 text-white py-2 px-4 rounded-lg shadow hover:bg-green-600 transition duration-300" onClick={() => handleShowModal('deposit')}>
+          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('deposit')}>
             Deposit Money
+            <FontAwesomeIcon icon={faArrowDown} className="ml-2" />
           </button>
-          <button className="bg-yellow-500 text-white py-2 px-4 rounded-lg shadow hover:bg-yellow-600 transition duration-300" onClick={() => handleShowModal('withdraw')}>
+          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('withdraw')}>
             Withdraw Money
+            <FontAwesomeIcon icon={faArrowUp} className='ml-2' />
           </button>
         </div> 
 
