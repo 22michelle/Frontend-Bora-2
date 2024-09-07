@@ -254,7 +254,7 @@ export default function Dashboard() {
         ) : userData ? (
           <div className="flex flex-col md:flex-row justify-center items-start w-full">
             {/* Credit Card */}
-            <div className="md:w-1/4 sm:w-[55%] relative">
+            <div className="md:w-1/4 sm:w-[110%] relative">
               <motion.div className="max-w-lg mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-8 relative overflow-hidden">
                 <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
                 <div className="flex justify-end items-center relative z-10">
