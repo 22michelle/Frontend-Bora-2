@@ -241,7 +241,7 @@ export default function Dashboard() {
         ) : userData ? (
           <div className="flex flex-col md:flex-row justify-center items-start w-full">
             {/* Credit Card */}
-            <div className="mt-10 md:w-1/3 relative">
+            <div className="mt-1 md:w-1/3 sm:w-1/2 relative">
               <motion.div className="max-w-lg mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-8 relative overflow-hidden">
                 <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
                 <div className="flex justify-end items-center relative z-10">
@@ -328,8 +328,8 @@ export default function Dashboard() {
           </button>
         </div> 
 
-    {/* Send Money Modal */}
-    {showSendModal && (
+        {/* Send Money Modal */}
+        {showSendModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Send Money</h2>
@@ -375,10 +375,10 @@ export default function Dashboard() {
       </div>
     </div>
   </div>
-    )}
+        )}
 
-    {/* Deposit Money Modal */}
-    {showDepositModal && (
+        {/* Deposit Money Modal */}
+        {showDepositModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Deposit Money</h2>
@@ -409,10 +409,10 @@ export default function Dashboard() {
       </div>
     </div>
   </div>
-    )}
+        )}
 
-    {/* Withdraw Money Modal */}
-    {showWithdrawModal && (
+        {/* Withdraw Money Modal */}
+        {showWithdrawModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Withdraw Money</h2>
@@ -443,7 +443,7 @@ export default function Dashboard() {
       </div>
     </div>
   </div>
-    )}
+        )}
   </section>
 </>
 
