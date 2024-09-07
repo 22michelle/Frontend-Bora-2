@@ -16,9 +16,22 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { toast } from 'react-toastify'; // Asegúrate de importar toast correctamente
+import { toast } from 'react-toastify';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
+const formatNumber = (value: number | string | null | undefined): string => {
+  if (value !== undefined && value !== null) {
+    const numberValue = parseFloat(value as string);
+    if (isNaN(numberValue)) {
+      return value.toString(); 
+    }
+    return numberValue % 1 === 0
+      ? numberValue.toString()
+      : numberValue.toFixed(2);
+  }
+  return "N/A";
+};
 
 export default function Dashboard() {
   const [userData, setUserData] = useState<any>(null);
@@ -241,7 +254,7 @@ export default function Dashboard() {
         ) : userData ? (
           <div className="flex flex-col md:flex-row justify-center items-start w-full">
             {/* Credit Card */}
-            <div className="mt-1 md:w-1/3 sm:w-1/2 relative">
+            <div className="md:w-1/4 sm:w-[55%] relative">
               <motion.div className="max-w-lg mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-8 relative overflow-hidden">
                 <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
                 <div className="flex justify-end items-center relative z-10">
@@ -260,7 +273,7 @@ export default function Dashboard() {
                   <div className="mt-4">
                     <h1 className='text-white'>Account Balance</h1>
                     <span className="text-white text-lg font-bold">
-                      ${userData.balance}
+                      ${formatNumber(userData.balance)}
                     </span>
                     <div className="flex justify-between items-center mt-1">
                       <span className="text-white">02/24</span>
@@ -300,13 +313,17 @@ export default function Dashboard() {
                 </div>
                 {/* Example Card 2 */}
                 <div className="bg-white rounded-lg shadow-md p-4">
-                  <h3 className="font-bold">Account Limits</h3>
-                  <p>Check your account limits and settings.</p>
+                  <h3 className="font-bold">Value</h3>
+                  <p className='section-title'>
+                  {formatNumber(userData.value)}
+                  </p>
                 </div>
                 {/* Example Card 3 */}
                 <div className="bg-white rounded-lg shadow-md p-4">
-                  <h3 className="font-bold">Rewards Points</h3>
-                  <p>Track your rewards points and benefits.</p>
+                  <h3 className="font-bold">Public_Rate</h3>
+                  <p className='section-title'>
+                   {formatNumber(userData.public_rate)}%
+                  </p>
                 </div>
               </div>
             </div>
