@@ -1,0 +1,5 @@
+{
+  "prettier.arrowParens": false,
+  "singleQuote": true,
+  "trailingComma": "none"
+}

@@ -21,6 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowUp,
   faArrowDown,
+  faHistory,
 } from "@fortawesome/free-solid-svg-icons";
 import Logo from "@/app/public/assets/Logo2.png"
 import Image from 'next/image';
@@ -72,6 +73,24 @@ export default function Dashboard() {
       setLoading(false);
     }
   }, []);
+
+  const fetchTransactions = async () => {
+    try {
+      const response = await axios.get('https://backend-bora.onrender.com/transaction/transactions', { withCredentials: true });
+      if (response.data.ok) {
+        setUserData((prev: any) => ({
+          ...prev,
+          transactionHistory: response.data.transactions
+        }));
+      } else {
+        console.error('Error fetching transactions:', response.data.message);
+        toast.error('Error fetching transaction history.');
+      }
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      toast.error('Failed to fetch transaction history.');
+    }
+  };  
 
   const fetchUserData = async (userId: string) => {
     try {
@@ -137,6 +156,12 @@ export default function Dashboard() {
       return;
     }
 
+    if (receiverAccountNumber === userData.accountNumber) {
+      toast.error("You cannot send money to your own account.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const senderAccountNumber = userData.accountNumber;
       const response = await axios.post(
@@ -150,7 +175,7 @@ export default function Dashboard() {
         { withCredentials: true }
       );
 
-      toast.success("Transaction created successfully");
+      toast.success("Transaction successfully");
       handleCloseModal("send");
 
       // Refresh user data
@@ -253,106 +278,121 @@ export default function Dashboard() {
 
   return (
     <>
-      <Header isDashboardPage={true} />
-      <section className="flex flex-col items-center justify-center bg-gray-100 p-8">
-        <h1 className="text-2xl font-bold mb-8">Welcome, {userData ? userData.name : 'User'}!</h1>
-        {loading ? (
-          <p>Loading user data...</p>
-        ) : userData ? (
-          <div className="flex flex-col md:flex-row justify-center items-start w-full">
-            {/* Credit Card */}
-            <div className="md:w-1/4 sm:w-[100%] relative">
-              <motion.div className="max-w-lg mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-8 relative overflow-hidden">
-                <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
-                <div className="flex justify-end items-center relative z-10">
-                  <span className="text-white text-lg font-bold">Bora</span>
-                  <Image src={Logo} alt="Logo" className="h-10 w-10" />
+  <Header isDashboardPage={true} />
+  <section className="flex flex-col items-center justify-center bg-gray-100 p-8">
+    <h1 className="text-2xl font-bold mb-8">Welcome, {userData ? userData.name : 'User'}!</h1>
+    {loading ? (
+      <p>Loading user data...</p>
+    ) : userData ? (
+      <div className="flex flex-col md:flex-row justify-center items-start w-full">
+        {/* Credit Card */}
+        <div className="mt-10 md:w-1/3 sm:w-[70%] relative">
+          <motion.div className="max-w-lg mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-4 relative overflow-hidden">
+            <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
+            <div className="flex justify-end items-center relative z-10">
+              <span className="text-white text-lg font-bold">Bora</span>
+            </div>
+            <div className="relative z-10">
+              <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
+                <Chip className="" alt="Chip" />
+              </div>
+              <br />
+              <div className="mt-4">
+                <span className="text-white text-sm font-bold">
+                  {userData.accountNumber}
+                </span>
+              </div>
+              <div className="mt-4">
+                <h1 className='text-white'>Account Balance</h1>
+                <span className="text-white text-lg font-bold">
+                  ${userData.balance.toFixed(2)}
+                </span>
+                <div className="flex justify-between items-center mt-1 gap-10">
+                  <span className="text-white">MetaBalance
+                    <br />
+                    {userData.value}
+                  </span>
+                  <span className="text-white">Public_Rate
+                    <br />
+                    {userData.public_rate}%
+                  </span>
                 </div>
-                <div className="relative z-10">
-                  <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
-                    <Chip className="" alt="Chip" />
-                  </div>
-                  <br />
-                  <div className="mt-4">
-                    <span className="text-white text-sm font-bold">
-                      {userData.accountNumber}
-                    </span>
-                  </div>
-                  <div className="mt-4">
-                    <h1 className='text-white'>Account Balance</h1>
-                    <span className="text-white text-lg font-bold">
-                      ${formatNumber(userData.balance)}
-                    </span>
-                    <div className="flex justify-between items-center mt-1 gap-10">
-                      <span className="text-white">MetaBalance
-                        <br />
-                        {formatNumber(userData.value)}
-                      </span>
-                      <span className="text-white">Public_Rate
-                        <br />
-                        {formatNumber(userData.public_rate)}%
-                      </span>
-                    </div>
-                    <div className="flex justify-end mt-3">
+                <div className="flex justify-end mt-3">
                   <Network className="h-4 w-4 ml-2 transform rotate-45" />
-                  </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-            {/* End Credit Card */}
-
-            {/* Chart Section */}
-            <div className="mt-10 md:w-1/2 p-4">
-              <h2 className="text-xl font-bold mb-4">Account Balance Over Time</h2>
-              <Line data={{
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                datasets: [
-                  {
-                    label: 'Account Balance Over Time',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    backgroundColor: 'rgba(75,192,192,0.4)',
-                    borderColor: 'rgba(75,192,192,1)',
-                  },
-                ],
-              }} />
-            </div>
-
-            {/* Additional Cards Section */}
-            <div className="mt-10 md:mt-0 md:w-1/3 p-4">
-              <h2 className="text-xl font-bold mb-4">Transaction History</h2>
-              <div className="grid grid-cols-1 gap-4">
-                {/* Example Card 1 */}
-                <div className="bg-white rounded-lg shadow-md p-4">
-                  <h3 className="font-bold">Recent Transactions</h3>
-                  <p>View your recent transactions here.</p>
                 </div>
               </div>
             </div>
+          </motion.div>
+          {/* Action Buttons - Moved Below Cards */}
+    <div className="mt-10 flex justify-center space-x-4">
+      <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('send')}>
+        Send Money
+        <Image src={Logo} alt='Logo' className="h-5 w-5 ml-2"/>
+      </button>
+      <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('deposit')}>
+        Deposit Money
+        <FontAwesomeIcon icon={faArrowDown} className="ml-2" />
+      </button>
+      <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('withdraw')}>
+        Withdraw Money
+        <FontAwesomeIcon icon={faArrowUp} className='ml-2' />
+      </button>
+    </div>
+        </div>
+        {/* End Credit Card */}
+
+        {/* Chart Section */}
+        <div className="mt-10 md:w-1/2 p-4">
+          <h2 className="text-xl font-bold mb-4">Account Balance Over Time</h2>
+          <Line data={{
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            datasets: [
+              {
+                label: 'Account Balance Over Time',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                fill: false,
+                backgroundColor: 'rgba(75,192,192,0.4)',
+                borderColor: 'rgba(75,192,192,1)',
+              },
+            ],
+          }} />
+        </div>
+
+        {/* History Section */}
+        <div className="mt-10 md:mt-0 md:w-1/3 p-4">
+  <h2 className="text-xl font-bold mb-4">
+    Transaction History 
+    <FontAwesomeIcon icon={faHistory} className="ml-2" />
+  </h2>
+  {userData?.transactionHistory?.length > 0 ? (
+    <ul>
+      {userData.transactionHistory.map((transaction: any, index: number) => (
+        <li key={index} className="mb-4 bg-white rounded-lg shadow-md p-4">
+          {/* col */}
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center space-x-2">
+              <Image src={Logo} alt='Logo' className="h-6 w-6 bg-black rounded-full"/>
+              <span>Receiver Name: {transaction.receiverName} <br />
+               <span className='text-[#001E80] sm:font-bold'>Send Money</span>
+              </span><br />
+            </div>
           </div>
-        ) : (
-          <p>No user data found.</p>
-        )}
-
-        {/* Action Buttons */}
-        <div className="mt-10 flex justify-center space-x-4">
-          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadowtransition duration-300" onClick={() => handleShowModal('send')}>
-            Send Money
-            <Image src={Logo} alt='Logo' className="h-5 w-5 ml-2"/>
-          </button>
-          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('deposit')}>
-            Deposit Money
-            <FontAwesomeIcon icon={faArrowDown} className="ml-2" />
-          </button>
-          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('withdraw')}>
-            Withdraw Money
-            <FontAwesomeIcon icon={faArrowUp} className='ml-2' />
-          </button>
-        </div> 
-
-        {/* Send Money Modal */}
-        {showSendModal && (
+          <span className='text-[#001E80] sm:font-bold'>Amount: -{transaction.amount}</span><br />
+          <span>fee_rate: {transaction.fee_rate}</span><br />
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p>No transactions found.</p>
+  )}
+</div>
+      </div>
+    ) : (
+      <p>No user data found.</p>
+    )}
+    
+    {/* Send Money Modal */}
+{showSendModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Send Money</h2>
@@ -390,18 +430,23 @@ export default function Dashboard() {
           Cancel
         </button>
         <button
-          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300"
+          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300 flex items-center justify-center"
           onClick={handleSendMoney}
+          disabled={isSubmitting}
         >
-          Send
+          {isSubmitting ? (
+            <div className="spinner"></div>
+          ) : (
+            "Send"
+          )}
         </button>
       </div>
     </div>
   </div>
-        )}
+)}
 
-        {/* Deposit Money Modal */}
-        {showDepositModal && (
+{/* Deposit Money Modal */}
+{showDepositModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Deposit Money</h2>
@@ -423,20 +468,23 @@ export default function Dashboard() {
           Cancel
         </button>
         <button
-          className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300"
+          className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300 flex items-center justify-center"
           onClick={handleDeposit}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Depositing..." : "Deposit"}
+          {isSubmitting ? (
+            <div className="spinner"></div>
+          ) : (
+            "Deposit"
+          )}
         </button>
       </div>
     </div>
   </div>
-        )}
-
-        {/* Withdraw Money Modal */}
-        {showWithdrawModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+)}
+   {/* Withdraw Money Modal */}
+{showWithdrawModal && (
+       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Withdraw Money</h2>
       <div className="space-y-4">
@@ -446,7 +494,7 @@ export default function Dashboard() {
           placeholder="Amount"
           value={withdrawData.amount}
           onChange={(e) => handleInputChange(e, setWithdrawData)}
-          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-yellow-500"
+          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-red-500"
         />
       </div>
       <div className="flex justify-end mt-6 space-x-4">
@@ -457,18 +505,21 @@ export default function Dashboard() {
           Cancel
         </button>
         <button
-          className="bg-yellow-600 text-white py-2 px-6 rounded-lg shadow hover:bg-yellow-700 transition duration-300"
+          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300 flex items-center justify-center"
           onClick={handleWithdraw}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Withdrawing..." : "Withdraw"}
+          {isSubmitting ? (
+            <div className="spinner"></div> 
+          ) : (
+            "Withdraw"
+          )}
         </button>
       </div>
     </div>
   </div>
-        )}
+)}
   </section>
-</>
-
+    </>
   );
 }

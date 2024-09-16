@@ -118,6 +118,7 @@ export default function SignUp() {
               onChange={(e) => setData({ ...data, name: e.target.value })}
               className={`form-control block w-full px-3 py-2 text-base font-normal text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out focus:outline-none`}
               autoComplete="off"
+              placeholder="Name"
             />
             {errors.name && <div className="text-red-500">{errors.name}</div>}
           </div>
@@ -130,6 +131,7 @@ export default function SignUp() {
               onChange={(e) => setData({ ...data, email: e.target.value })}
               className={`form-control block w-full px-3 py-2 text-base font-normal text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out focus:outline-none`}
               autoComplete="off" 
+              placeholder="Email"
             />
             {errors.email && <div className="text-red-500">{errors.email}</div>}
           </div>
@@ -143,6 +145,7 @@ export default function SignUp() {
                 onChange={(e) => setData({ ...data, password: e.target.value })}
                 className={`form-control block w-full px-3 py-2 text-base font-normal text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out focus:outline-none`}
                 autoComplete="new-password" 
+                placeholder="Password"
               />
               <button
                 type="button"
@@ -163,6 +166,7 @@ export default function SignUp() {
                 value={data.confirmPassword}
                 onChange={(e) => setData({ ...data, confirmPassword: e.target.value })}
                 className={`form-control block w-full px-3 py-2 text-base font-normal text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out focus:outline-none`}
+                placeholder="Confirm Password"
               />
               <button
                 type="button"
@@ -187,8 +191,8 @@ export default function SignUp() {
 
           <p className="text-center text-sm mt-4">
             Already have an account?{" "}
-            <Link href="/login">
-              Login
+            <Link href="/login" className="underline text-[#001E80] sm:font-bold">
+              Log In
             </Link>
           </p>
         </form>

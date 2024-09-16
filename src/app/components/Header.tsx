@@ -66,7 +66,8 @@ export const Header = ({ isDashboardPage = false, isLoginPage = false, isSignupP
               </button>
             ) : isLoginPage ? (
               <>
-                <Link href="/signup" className="underline">Sign Up</Link>
+                <Link href="/" className="" onClick={closeMenu}>Home</Link>
+                <Link href="/signup" className="underline text-[#001E80] sm:font-bold">Sign Up</Link>
                 <Link href="/">
                 <button className="btn btn-primary hover:bg-[#001E80] text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight" onClick={closeMenu}>
                   Get the app
@@ -76,7 +77,8 @@ export const Header = ({ isDashboardPage = false, isLoginPage = false, isSignupP
               </>
             ) : isSignupPage ? (
               <>
-                <Link href="/login" className="underline">Log In</Link>
+                <Link href="/" className="" onClick={closeMenu}>Home</Link>
+                <Link href="/login" className="underline text-[#001E80] sm:font-bold">Log In</Link>
                 <Link href="/">
                 <button className="btn btn-primary hover:bg-[#001E80] text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight" onClick={closeMenu}>
                   Get the app
@@ -90,7 +92,7 @@ export const Header = ({ isDashboardPage = false, isLoginPage = false, isSignupP
                 <Link href="#about">About</Link>
                 <Link href="#testimonials">Testimonials</Link>
                 <Link href="#contact">Contact Us</Link>
-                <Link href="/signup" className="underline">Sign Up</Link>
+                <Link href="/signup" className="underline text-[#001E80] sm:font-bold">Sign Up</Link>
                 <Link href="/">
                 <button className="btn btn-primary hover:bg-[#001E80] text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight" onClick={closeMenu}>
                   Get the app
@@ -115,7 +117,8 @@ export const Header = ({ isDashboardPage = false, isLoginPage = false, isSignupP
                   </button>
                 ) : isLoginPage ? (
                   <>
-                    <Link href="/signup" className="" onClick={closeMenu}>Sign Up</Link>
+                    <Link href="/" className="" onClick={closeMenu}>Home</Link>
+                    <Link href="/signup" className="underline text-[#001E80] sm:font-bold" onClick={closeMenu}>Sign Up</Link>
                     <button className="bg-black text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight" onClick={closeMenu}>
                       Get the app
                       <Download className="h-4 w-4 ml-2" />
@@ -123,7 +126,8 @@ export const Header = ({ isDashboardPage = false, isLoginPage = false, isSignupP
                   </>
                 ) : isSignupPage ? (
                   <>
-                    <Link href="/login" className="" onClick={closeMenu}>Log In</Link>
+                    <Link href="/" className="" onClick={closeMenu}>Home</Link>
+                    <Link href="/login" className="underline text-[#001E80] sm:font-bold" onClick={closeMenu}>Log In</Link>
                     <button className="bg-black text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight" onClick={closeMenu}>
                       Get the app
                       <Download className="h-4 w-4 ml-2" />
@@ -135,7 +139,7 @@ export const Header = ({ isDashboardPage = false, isLoginPage = false, isSignupP
                     <Link href="#about" onClick={closeMenu}>About</Link>
                     <Link href="#testimonials" onClick={closeMenu}>Testimonials</Link>
                     <Link href="#contact" onClick={closeMenu}>Contact Us</Link>
-                    <Link href="/signup" className="underline" onClick={closeMenu}>Sign Up</Link>
+                    <Link href="/signup" className="underline text-[#001E80] sm:font-bold" onClick={closeMenu}>Sign Up</Link>
                     <Link href="/">
                    <button className="btn btn-primary hover:bg-[#001E80] text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight" onClick={closeMenu}>
                       Get the app

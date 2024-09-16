@@ -106,6 +106,7 @@ export default function Login() {
                     onChange={(e) => setData({ ...data, email: e.target.value })}
                     className={`form-control block w-full px-3 py-2 text-base font-normal text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out focus:outline-none`}
                     autoComplete="currentnew-password"
+                    placeholder="Email address"
                   />
                   {errors.email && <div className="text-red-500">{errors.email}</div>}
                 </div>
@@ -119,6 +120,7 @@ export default function Login() {
                       onChange={(e) => setData({ ...data, password: e.target.value })}
                       className={`form-control block w-full px-3 py-2 text-base font-normal text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out focus:outline-none`}
                       autoComplete="new-password"
+                      placeholder="Password"
                     />
                     <button
                       type="button"
@@ -143,7 +145,7 @@ export default function Login() {
 
                 <p className="text-center text-sm mt-4">
                   Dont have an account?{" "}
-                  <Link href="/signup">
+                  <Link href="/signup" className="underline text-[#001E80] sm:font-bold">
                     Sign Up
                   </Link>
                 </p>
