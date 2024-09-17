@@ -28,17 +28,28 @@ import Image from 'next/image';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const formatNumber = (value: number | string | null | undefined): string => {
+const formatNumber = (value: number | string | null | undefined, isBalance: boolean = false): string => {
   if (value !== undefined && value !== null) {
     const numberValue = parseFloat(value as string);
+    
     if (isNaN(numberValue)) {
-      return value.toString(); 
+      return value.toString();
     }
-    return numberValue % 1 === 0
-      ? numberValue.toString()
-      : numberValue.toFixed(2);
+
+    if (isBalance) {
+      // Balance COP (Pesos Colombianos)
+      return numberValue % 1 === 0 
+        ? new Intl.NumberFormat('es-CO').format(numberValue)
+        : new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(numberValue);
+    } else {
+      // Para otros valores
+      return numberValue % 1 === 0 
+        ? numberValue.toString() 
+        : numberValue.toFixed(2);
+    }
   }
-  return "N/A";
+  
+  return "N/A"; 
 };
 
 export default function Dashboard() {
@@ -279,119 +290,108 @@ export default function Dashboard() {
   return (
     <>
   <Header isDashboardPage={true} />
-  <section className="flex flex-col items-center justify-center bg-gray-100 p-8">
-    <h1 className="text-2xl font-bold mb-8">Welcome, {userData ? userData.name : 'User'}!</h1>
-    {loading ? (
-      <p>Loading user data...</p>
-    ) : userData ? (
-      <div className="flex flex-col md:flex-row justify-center items-start w-full">
-        {/* Credit Card */}
-        <div className="mt-10 md:w-1/3 sm:w-[70%] relative">
-          <motion.div className="max-w-lg mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-4 relative overflow-hidden">
-            <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
-            <div className="flex justify-end items-center relative z-10">
-              <span className="text-white text-lg font-bold">Bora</span>
-            </div>
-            <div className="relative z-10">
-              <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
-                <Chip className="" alt="Chip" />
-              </div>
-              <br />
-              <div className="mt-4">
-                <span className="text-white text-sm font-bold">
-                  {userData.accountNumber}
-                </span>
-              </div>
-              <div className="mt-4">
-                <h1 className='text-white'>Account Balance</h1>
-                <span className="text-white text-lg font-bold">
-                  ${userData.balance.toFixed(2)}
-                </span>
-                <div className="flex justify-between items-center mt-1 gap-10">
-                  <span className="text-white">MetaBalance
-                    <br />
-                    {userData.value}
-                  </span>
-                  <span className="text-white">Public_Rate
-                    <br />
-                    {userData.public_rate}%
-                  </span>
-                </div>
-                <div className="flex justify-end mt-3">
-                  <Network className="h-4 w-4 ml-2 transform rotate-45" />
-                </div>
-              </div>
-            </div>
-          </motion.div>
-          {/* Action Buttons - Moved Below Cards */}
-    <div className="mt-10 flex justify-center space-x-4">
-      <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('send')}>
-        Send Money
-        <Image src={Logo} alt='Logo' className="h-5 w-5 ml-2"/>
-      </button>
-      <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('deposit')}>
-        Deposit Money
-        <FontAwesomeIcon icon={faArrowDown} className="ml-2" />
-      </button>
-      <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300" onClick={() => handleShowModal('withdraw')}>
-        Withdraw Money
-        <FontAwesomeIcon icon={faArrowUp} className='ml-2' />
-      </button>
-    </div>
-        </div>
-        {/* End Credit Card */}
+  <section className="flex flex-col items-center justify-center bg-gray-100 p-4 sm:p-8">
+  <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-8 text-center">Welcome, {userData ? userData.name : 'User'}!</h1>
 
-        {/* Chart Section */}
-        <div className="mt-10 md:w-1/2 p-4">
-          <h2 className="text-xl font-bold mb-4">Account Balance Over Time</h2>
-          <Line data={{
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-              {
-                label: 'Account Balance Over Time',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                fill: false,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: 'rgba(75,192,192,1)',
-              },
-            ],
-          }} />
-        </div>
-
-        {/* History Section */}
-        <div className="mt-10 md:mt-0 md:w-1/3 p-4">
-  <h2 className="text-xl font-bold mb-4">
-    Transaction History 
-    <FontAwesomeIcon icon={faHistory} className="ml-2" />
-  </h2>
-  {userData?.transactionHistory?.length > 0 ? (
-    <ul>
-      {userData.transactionHistory.map((transaction: any, index: number) => (
-        <li key={index} className="mb-4 bg-white rounded-lg shadow-md p-4">
-          {/* col */}
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center space-x-2">
-              <Image src={Logo} alt='Logo' className="h-6 w-6 bg-black rounded-full"/>
-              <span>Receiver Name: {transaction.receiverName} <br />
-               <span className='text-[#001E80] sm:font-bold'>Send Money</span>
-              </span><br />
+  {loading ? (
+    <p>Loading user data...</p>
+  ) : userData ? (
+    <div className="flex flex-col md:flex-row justify-center items-start w-full">
+      {/* Credit Card */}
+      <div className="mt-6 sm:mt-10 w-full sm:w-[80%] md:w-1/3 relative p-4 sm:p-6 lg:p-8">
+        <motion.div className="max-w-full mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-4 relative overflow-hidden">
+          <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
+          <div className="flex justify-end items-center relative z-10">
+            <span className="text-white text-lg font-bold">Bora</span>
+          </div>
+          <div className="relative z-10">
+            <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
+              <Chip alt="Chip" />
+            </div>
+            <br />
+            <div className="mt-4">
+              <span className="text-white text-sm font-bold">{userData.accountNumber}</span>
+            </div>
+            <div className="mt-4">
+              <h1 className="text-white">Account Balance</h1>
+              <span className="text-white text-lg font-bold">{formatNumber(userData.balance, true)}</span>
+              <div className="flex justify-between items-center mt-1 gap-3">
+                <span className="text-white">MetaBalance<br />{formatNumber(userData.value)}</span>
+                <span className="text-white">Public Rate<br />{formatNumber(userData.public_rate)}%</span>
+              </div>
+              <div className="flex justify-end mt-3">
+                <Network className="h-4 w-4 ml-2 transform rotate-45" />
+              </div>
             </div>
           </div>
-          <span className='text-[#001E80] sm:font-bold'>Amount: -{transaction.amount}</span><br />
-          <span>fee_rate: {transaction.fee_rate}</span><br />
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p>No transactions found.</p>
-  )}
-</div>
+        </motion.div>
+
+        {/* Action Buttons */}
+        <div className="mt-6 sm:mt-10 flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:space-x-4">
+          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto" onClick={() => handleShowModal('send')}>
+            Send Money
+            <Image src={Logo} alt='Logo' className="h-5 w-5 ml-2" />
+          </button>
+          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto" onClick={() => handleShowModal('deposit')}>
+            Deposit Money
+            <FontAwesomeIcon icon={faArrowDown} className="ml-2" />
+          </button>
+          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto" onClick={() => handleShowModal('withdraw')}>
+            Withdraw Money
+            <FontAwesomeIcon icon={faArrowUp} className='ml-2' />
+          </button>
+        </div>
       </div>
-    ) : (
-      <p>No user data found.</p>
-    )}
-    
-    {/* Send Money Modal */}
+
+      {/* Chart Section */}
+      <div className="mt-6 sm:mt-10 w-full md:w-1/2 p-4">
+        <h2 className="text-lg sm:text-xl font-bold mb-4">Account Balance Over Time</h2>
+        <Line data={{
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          datasets: [
+            {
+              label: 'Account Balance Over Time',
+              data: [65, 59, 80, 81, 56, 55, 40],
+              fill: false,
+              backgroundColor: 'rgba(75,192,192,0.4)',
+              borderColor: 'rgba(75,192,192,1)',
+            },
+          ],
+        }} />
+      </div>
+
+      {/* History Section */}
+      <div className="mt-6 sm:mt-10 w-full md:w-1/3 p-4">
+        <h2 className="text-lg sm:text-xl font-bold mb-4">Transaction History 
+          <FontAwesomeIcon icon={faHistory} className="ml-2" />
+        </h2>
+        {userData?.transactionHistory?.length > 0 ? (
+          <ul>
+            {userData.transactionHistory.map((transaction: any, index: number) => (
+              <li key={index} className="mb-4 bg-white rounded-lg shadow-md p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center space-x-2">
+                    <Image src={Logo} alt='Logo' className="h-6 w-6 bg-black rounded-full" />
+                    <span>Receiver Name: {transaction.receiverName} 
+                      <br />
+                      <span className="text-[#001E80] font-bold">Send Money</span>
+                    </span>
+                  </div>
+                </div>
+                <span className="text-[#001E80] font-bold">Amount: -{transaction.amount}</span><br />
+                <span>Fee Rate: {transaction.fee_rate}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="bg-white rounded-lg shadow-md p-4">No transactions found.</p>
+        )}
+      </div>
+    </div>
+  ) : (
+    <p>No user data found.</p>
+  )}
+{/* Send Money Modal */}
 {showSendModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
@@ -444,7 +444,6 @@ export default function Dashboard() {
     </div>
   </div>
 )}
-
 {/* Deposit Money Modal */}
 {showDepositModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -482,7 +481,7 @@ export default function Dashboard() {
     </div>
   </div>
 )}
-   {/* Withdraw Money Modal */}
+{/* Withdraw Money Modal */}
 {showWithdrawModal && (
        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
