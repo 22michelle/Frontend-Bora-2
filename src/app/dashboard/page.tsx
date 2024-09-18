@@ -39,8 +39,8 @@ const formatNumber = (value: number | string | null | undefined, isBalance: bool
     if (isBalance) {
       // Balance COP (Pesos Colombianos)
       return numberValue % 1 === 0 
-        ? new Intl.NumberFormat('es-CO').format(numberValue)
-        : new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(numberValue);
+      ? `$${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2 }).format(numberValue).replace('.', ',')}` // Formato sin decimales, pero siempre con dos decimales
+      : `$${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(numberValue).replace('.', ',')}`; // Formato con dos decimales
     } else {
       // Para otros valores
       return numberValue % 1 === 0 
@@ -83,12 +83,13 @@ export default function Dashboard() {
       console.error("No user ID found in local storage.");
       setLoading(false);
     }
-  }, []);
+  }, []);  
 
   const fetchTransactions = async () => {
     try {
       const response = await axios.get('https://backend-bora.onrender.com/transaction/transactions', { withCredentials: true });
       if (response.data.ok) {
+        console.log('Transactions:', response.data.transactions); // Debugging: Verifica los datos
         setUserData((prev: any) => ({
           ...prev,
           transactionHistory: response.data.transactions
@@ -105,18 +106,32 @@ export default function Dashboard() {
 
   const fetchUserData = async (userId: string) => {
     try {
-      const response = await axios.get(`https://backend-bora.onrender.com/user/${userId}`);
-      if (response.data.ok) {
-        setUserData(response.data.data);
+      const userResponse = await axios.get(`https://backend-bora.onrender.com/user/${userId}`);
+      if (userResponse.data.ok) {
+        const userData = userResponse.data.data;
+        setUserData(userData);
+        console.log(userData.transactionHistory);
+  
+        // Fetch transactions for the specific user
+        const transactionsResponse = await axios.get(`https://backend-bora.onrender.com/transaction/user/${userId}`, { withCredentials: true });
+        if (transactionsResponse.data.ok) {
+          setUserData((prev: any) => ({
+            ...prev,
+            transactionHistory: transactionsResponse.data.transactions
+          }));
+        } else {
+          console.error('Error fetching transactions:', transactionsResponse.data.message);
+          toast.error('Error fetching transaction history.');
+        }
       } else {
-        console.error('Error:', response.data.message);
+        console.error('Error:', userResponse.data.message);
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   const handleShowModal = (modal: string) => {
     switch (modal) {
@@ -350,8 +365,15 @@ export default function Dashboard() {
           labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
           datasets: [
             {
-              label: 'Account Balance Over Time',
-              data: [65, 59, 80, 81, 56, 55, 40],
+              label: 'Value Over Time',
+              data: [userData.value],
+              fill: false,
+              backgroundColor: 'rgba(255,159,64,0.4)',
+              borderColor: 'rgba(255,159,64,1)',
+            },
+            {
+              label: 'Balance Over Time',
+              data: [userData.balance],
               fill: false,
               backgroundColor: 'rgba(75,192,192,0.4)',
               borderColor: 'rgba(75,192,192,1)',
@@ -361,36 +383,44 @@ export default function Dashboard() {
       </div>
 
       {/* History Section */}
-      <div className="mt-6 sm:mt-10 w-full md:w-1/3 p-4">
-        <h2 className="text-lg sm:text-xl font-bold mb-4">Transaction History 
-          <FontAwesomeIcon icon={faHistory} className="ml-2" />
-        </h2>
-        {userData?.transactionHistory?.length > 0 ? (
-          <ul>
-            {userData.transactionHistory.map((transaction: any, index: number) => (
-              <li key={index} className="mb-4 bg-white rounded-lg shadow-md p-4">
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center space-x-2">
-                    <Image src={Logo} alt='Logo' className="h-6 w-6 bg-black rounded-full" />
-                    <span>Receiver Name: {transaction.receiverName} 
-                      <br />
-                      <span className="text-[#001E80] font-bold">Send Money</span>
-                    </span>
-                  </div>
-                </div>
-                <span className="text-[#001E80] font-bold">Amount: -{transaction.amount}</span><br />
-                <span>Fee Rate: {transaction.fee_rate}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="bg-white rounded-lg shadow-md p-4">No transactions found.</p>
-        )}
-      </div>
+   <div className="mt-6 sm:mt-10 w-full md:w-1/3 p-4">
+  <h2 className="text-lg sm:text-xl font-bold mb-4">
+    Transaction History
+    <FontAwesomeIcon icon={faHistory} className="ml-2" />
+  </h2>
+  
+  {userData?.transactionHistory?.length > 0 ? (
+    <ul>
+      {userData.transactionHistory.map((transaction: any, index: number) => (
+        <li key={index} className="mb-4 bg-white rounded-lg shadow-md p-4">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center space-x-2">
+              <Image src={Logo} alt="Logo" className="h-6 w-6 bg-black rounded-full" />
+              <span>
+                Receiver Name: {transaction.receiverName}
+                <br />
+                <span className="text-[#001E80] font-bold">Send Money</span>
+              </span>
+            </div>
+          </div>
+          <span className="text-[#001E80] font-bold">
+            Amount: -{formatNumber(transaction.amount, true)}
+          </span>
+          <br />
+          <span>Fee Rate: {formatNumber(transaction.fee_rate)}</span>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="bg-white rounded-lg shadow-md p-4">No transactions found.</p>
+  )}
+</div>
+
     </div>
   ) : (
     <p>No user data found.</p>
   )}
+
 {/* Send Money Modal */}
 {showSendModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
