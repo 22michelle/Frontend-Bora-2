@@ -293,63 +293,65 @@ export default function Dashboard() {
   return (
     <>
   <Header isDashboardPage={true} />
-  <section className="flex flex-col items-center justify-center bg-gray-100 p-4 sm:p-8">
+  <section className="flex flex-col items-center justify-center p-4 sm:p-8">
   <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-8 text-center">Welcome, {userData ? userData.name : 'User'}!</h1>
 
   {loading ? (
-    <p>Loading user data...</p>
-  ) : userData ? (
-    <div className="flex flex-col md:flex-row justify-center items-start w-full">
-      {/* Credit Card */}
-      <div className="mt-6 sm:mt-10 w-full sm:w-[80%] md:w-1/3 relative p-4 sm:p-6 lg:p-8">
-        <motion.div className="max-w-full mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-4 relative overflow-hidden">
-          <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
-          <div className="flex justify-end items-center relative z-10">
-            <span className="text-white text-lg font-bold">Bora</span>
-          </div>
-          <div className="relative z-10">
-            <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
-              <Chip alt="Chip" />
-            </div>
-            <br />
-            <div className="mt-4">
-              <span className="text-white text-sm font-bold">{userData.accountNumber}</span>
-            </div>
-            <div className="mt-4">
-              <h1 className="text-white">Account Balance</h1>
-              <span className="text-white text-lg font-bold">{formatNumber(userData.balance, true)}</span>
-              <div className="flex justify-between items-center mt-1 gap-3">
-                <span className="text-white">MetaBalance<br />{formatNumber(userData.value)}</span>
-                <span className="text-white">Public Rate<br />{formatNumber(userData.public_rate)}%</span>
-              </div>
-              <div className="flex justify-end mt-3">
-                <Network className="h-4 w-4 ml-2 transform rotate-45" />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Action Buttons */}
-        <div className="mt-6 sm:mt-10 flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:space-x-4">
-          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto" onClick={() => handleShowModal('send')}>
-            Send Money
-            <Image src={Logo} alt='Logo' className="h-5 w-5 ml-2" />
-          </button>
-          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto" onClick={() => handleShowModal('deposit')}>
-            Deposit Money
-            <FontAwesomeIcon icon={faArrowDown} className="ml-2" />
-          </button>
-          <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto" onClick={() => handleShowModal('withdraw')}>
-            Withdraw Money
-            <FontAwesomeIcon icon={faArrowUp} className='ml-2' />
-          </button>
+  <p>Loading user data...</p>
+) : userData ? (
+  <div className="flex flex-col md:flex-row justify-center items-start w-full">
+    {/* Credit Card */}
+    <div className="mt-6 sm:mt-10 w-full sm:w-[90%] md:w-[40%] xl:w-[30%] relative p-4 sm:p-6 lg:p-8">
+      <motion.div className="max-w-full mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-4 relative overflow-hidden">
+        <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
+        <div className="flex justify-end items-center relative z-10">
+          <span className="text-white text-lg font-bold">Bora</span>
         </div>
-      </div>
+        <div className="relative z-10">
+          <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
+            <Chip alt="Chip" />
+          </div>
+          <br />
+          <div className="mt-4">
+            <span className="text-white text-sm font-bold">{userData.accountNumber}</span>
+          </div>
+          <div className="mt-4">
+            <h1 className="text-white">Account Balance</h1>
+            <span className="text-white text-lg font-bold">{formatNumber(userData.balance, true)}</span>
+            <div className="flex justify-between items-center mt-1 gap-3">
+              <span className="text-white">MetaBalance<br />{formatNumber(userData.value)}</span>
+              <span className="text-white">Public Rate<br />{formatNumber(userData.public_rate)}%</span>
+            </div>
+            <div className="flex justify-end mt-3">
+              <Network className="h-4 w-4 ml-2 transform rotate-45" />
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
-      {/* Chart Section */}
-      <div className="mt-6 sm:mt-10 w-full md:w-1/2 p-4">
-        <h2 className="text-lg sm:text-xl font-bold mb-4">Account Balance Over Time</h2>
-        <Line data={{
+      {/* Action Buttons */}
+      <div className="mt-6 sm:mt-10 flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:space-x-4 md:flex-row md:space-x-4">
+        <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto">
+          Send Money
+          <Image src={Logo} alt="Logo" className="h-5 w-5 ml-2" />
+        </button>
+        <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto">
+          Deposit Money
+          <FontAwesomeIcon icon={faArrowDown} className="ml-2" />
+        </button>
+        <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto">
+          Withdraw Money
+          <FontAwesomeIcon icon={faArrowUp} className="ml-2" />
+        </button>
+      </div>
+      {/* End Action Buttons */}
+    </div>
+    
+    {/* Chart Section */}
+    <div className="mt-6 sm:mt-10 w-full md:w-[60%] xl:w-[50%] p-4">
+      <h2 className="text-lg sm:text-xl font-bold mb-4">Account Balance Over Time</h2>
+      <Line
+        data={{
           labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
           datasets: [
             {
@@ -367,54 +369,67 @@ export default function Dashboard() {
               borderColor: 'rgba(75,192,192,1)',
             },
           ],
-        }} />
-      </div>
-
-      {/* History Section */}
-   <div className="mt-6 sm:mt-10 w-full md:w-1/3 p-4">
-  <h2 className="text-lg sm:text-xl font-bold mb-4">
-    Transaction History
-    <FontAwesomeIcon icon={faHistory} className="ml-2" />
-  </h2>
-  
-  {userData?.transactionHistory?.length > 0 ? (
-    <ul>
-      {userData.transactionHistory.map((transaction: any, index: number) => (
-        <li key={index} className="mb-4 bg-white rounded-lg shadow-md p-4">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center space-x-2">
-              <Image src={Logo} alt="Logo" className="h-6 w-6 bg-black rounded-full" />
-              <span className="font-bold">
-                {transaction.receiverName}
-                <br />
-                <span className="text-[#001E80] font-bold">Transfer Money</span>
-              </span>
-            </div>
-          </div>
-          <span>Numero de cuenta:</span> 
-          <br />
-          <span className="font-bold">
-           {transaction.receiveraccountNumber}
-          </span>
-          <br />
-          <hr className='m-3'/>
-          <span className="text-[#ab2828] font-bold">
-            -{formatNumber(transaction.amount, true)}
-          </span>
-          <br />
-          <span>Fee Rate: {formatNumber(transaction.fee_rate)}%</span>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className="bg-white rounded-lg shadow-md p-4">No transactions found.</p>
-  )}
-   </div>
-      {/* History Section */}
+        }}
+      />
     </div>
-  ) : (
-    <p>No user data found.</p>
-  )}
+
+    {/* History Section */}
+    <div className="mt-6 sm:mt-10 w-full md:w-2/3 lg:w-1/2 p-4">
+      <h2 className="text-lg sm:text-xl font-bold mb-4 flex items-center text-gray-800">
+        Transaction History
+        <FontAwesomeIcon icon={faHistory} className="ml-2 text-blue-600" />
+      </h2>
+      {userData?.transactionHistory?.length > 0 ? (
+        <ul>
+          {userData.transactionHistory.map((transaction: any, index: number) => (
+            <li key={index} className="mb-6 bg-white rounded-lg shadow-md p-5 transition-transform transform hover:scale-105">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-3">
+                  <Image src={Logo} alt="Logo" className="h-8 w-8 bg-black rounded-full" />
+                  <div>
+                    <span className="font-bold text-gray-800">
+                      {userData._id === transaction.senderId ? transaction.receiverName : transaction.senderName}
+                    </span>
+                    <br />
+                    <span className="text-sm text-gray-600 font-medium">
+                      {userData._id === transaction.senderId ? "Transfer Money" : "Received Money"}
+                    </span>
+                  </div>
+                </div>
+                <div className={`${userData._id === transaction.senderId ? "text-red-600" : "text-green-600"} font-bold text-lg`}>
+                  {userData._id === transaction.senderId ? `-${formatNumber(transaction.amount, true)}` : `+${formatNumber(transaction.amount, true)}`}
+                </div>
+              </div>
+
+              <hr className="my-3" />
+
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                <div className="mb-2 sm:mb-0">
+                  <span className="block text-sm font-bold text-gray-700">Account Number:</span>
+                  <span className="text-md text-gray-800">
+                    {userData._id === transaction.senderId ? transaction.receiveraccountNumber : transaction.senderaccountNumber}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-gray-700">Public Rate:</span>
+                  <span className="text-blue-600 font-bold ml-2">
+                    {formatNumber(transaction.fee_rate)}%
+                  </span>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="bg-white rounded-lg shadow-md p-4 text-center text-gray-500">No transactions found.</p>
+      )}
+    </div>
+    {/* End History Section */}
+  </div>
+) : (
+  <p>No user data found.</p>
+)}
+
 
 {/* Send Money Modal */}
 {showSendModal && (
