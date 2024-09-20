@@ -331,15 +331,18 @@ export default function Dashboard() {
 
       {/* Action Buttons */}
       <div className="mt-6 sm:mt-10 flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:space-x-4 md:flex-row md:space-x-4">
-        <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto">
+        <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto"
+        onClick={() => handleShowModal('send')}>
           Send Money
           <Image src={Logo} alt="Logo" className="h-5 w-5 ml-2" />
         </button>
-        <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto">
+        <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto"
+        onClick={() => handleShowModal('deposit')}>
           Deposit Money
           <FontAwesomeIcon icon={faArrowDown} className="ml-2" />
         </button>
-        <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto">
+        <button className="btn btn-primary hover:bg-[#001E80] py-2 px-4 rounded-lg shadow transition duration-300 w-full sm:w-auto"
+        onClick={() => handleShowModal('withdraw')}>
           Withdraw Money
           <FontAwesomeIcon icon={faArrowUp} className="ml-2" />
         </button>
@@ -429,7 +432,6 @@ export default function Dashboard() {
 ) : (
   <p>No user data found.</p>
 )}
-
 
 {/* Send Money Modal */}
 {showSendModal && (
