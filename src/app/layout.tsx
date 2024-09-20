@@ -9,6 +9,9 @@ const dmSans = DM_Sans({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Bora",
   description: "May your connections be stronger",
+  icons: {
+    icon: "./Logo2.png",
+  }
 };
 
 export default function RootLayout({

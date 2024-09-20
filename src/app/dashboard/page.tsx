@@ -83,42 +83,30 @@ export default function Dashboard() {
       console.error("No user ID found in local storage.");
       setLoading(false);
     }
-  }, []);  
-
-  const fetchTransactions = async () => {
-    try {
-      const response = await axios.get('https://backend-bora.onrender.com/transaction/transactions', { withCredentials: true });
-      if (response.data.ok) {
-        console.log('Transactions:', response.data.transactions); // Debugging: Verifica los datos
-        setUserData((prev: any) => ({
-          ...prev,
-          transactionHistory: response.data.transactions
-        }));
-      } else {
-        console.error('Error fetching transactions:', response.data.message);
-        toast.error('Error fetching transaction history.');
-      }
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-      toast.error('Failed to fetch transaction history.');
-    }
-  };  
-
+  }, []);
+  
   const fetchUserData = async (userId: string) => {
     try {
       const userResponse = await axios.get(`https://backend-bora.onrender.com/user/${userId}`);
       if (userResponse.data.ok) {
         const userData = userResponse.data.data;
         setUserData(userData);
-        console.log(userData.transactionHistory);
+        console.log("User Data:", userData);
   
         // Fetch transactions for the specific user
-        const transactionsResponse = await axios.get(`https://backend-bora.onrender.com/transaction/user/${userId}`, { withCredentials: true });
+        const transactionsResponse = await axios.get(`https://backend-bora.onrender.com/transaction/history/${userId}`);
         if (transactionsResponse.data.ok) {
-          setUserData((prev: any) => ({
-            ...prev,
-            transactionHistory: transactionsResponse.data.transactions
-          }));
+          const transactions = transactionsResponse.data.data; // Access transactions from 'data'
+          console.log("Transactions:", transactions);
+  
+          if (Array.isArray(transactions) && transactions.length > 0) {
+            setUserData((prev: any) => ({
+              ...prev,
+              transactionHistory: transactions
+            }));
+          } else {
+            console.warn('No transactions found for this user.');
+          }
         } else {
           console.error('Error fetching transactions:', transactionsResponse.data.message);
           toast.error('Error fetching transaction history.');
@@ -132,7 +120,7 @@ export default function Dashboard() {
       setLoading(false);
     }
   };  
-
+  
   const handleShowModal = (modal: string) => {
     switch (modal) {
       case "send":
@@ -396,26 +384,33 @@ export default function Dashboard() {
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center space-x-2">
               <Image src={Logo} alt="Logo" className="h-6 w-6 bg-black rounded-full" />
-              <span>
-                Receiver Name: {transaction.receiverName}
+              <span className="font-bold">
+                {transaction.receiverName}
                 <br />
-                <span className="text-[#001E80] font-bold">Send Money</span>
+                <span className="text-[#001E80] font-bold">Transfer Money</span>
               </span>
             </div>
           </div>
-          <span className="text-[#001E80] font-bold">
-            Amount: -{formatNumber(transaction.amount, true)}
+          <span>Numero de cuenta:</span> 
+          <br />
+          <span className="font-bold">
+           {transaction.receiveraccountNumber}
           </span>
           <br />
-          <span>Fee Rate: {formatNumber(transaction.fee_rate)}</span>
+          <hr className='m-3'/>
+          <span className="text-[#ab2828] font-bold">
+            -{formatNumber(transaction.amount, true)}
+          </span>
+          <br />
+          <span>Fee Rate: {formatNumber(transaction.fee_rate)}%</span>
         </li>
       ))}
     </ul>
   ) : (
     <p className="bg-white rounded-lg shadow-md p-4">No transactions found.</p>
   )}
-</div>
-
+   </div>
+      {/* History Section */}
     </div>
   ) : (
     <p>No user data found.</p>
