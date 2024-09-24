@@ -40,7 +40,6 @@ export const Hero = () => {
               <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
               <div className="flex justify-end items-center relative z-10">
                 <span className="text-white text-lg font-bold">Bora</span>
-                <Image src={Logo} alt="Logo" className="h-10 w-10" />
               </div>
               <div className="relative z-10">
                 <div className="absolute h-8 w-10 bg-white rounded flex items-center justify-center">
@@ -54,7 +53,7 @@ export const Hero = () => {
                     **** **** 9430
                   </span>
                   <h1 className="text-white">Account Balance</h1>
-                  <span className="text-white">5000</span>
+                  <span className="text-white">$5.000,00</span>
                 </div>
                 <div className="mt-4">
                   <div className="flex justify-between items-center mt-1">
@@ -62,7 +61,7 @@ export const Hero = () => {
                         <br />
                         5000
                       </span>
-                      <span className="text-white">Public_Rate
+                      <span className="text-white">Overall Rate
                         <br />
                         10%
                       </span>

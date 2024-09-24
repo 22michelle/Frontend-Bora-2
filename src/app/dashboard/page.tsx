@@ -158,52 +158,65 @@ export default function Dashboard() {
     stateSetter((prev: any) => ({ ...prev, [name]: value }));
   };
 
-  // Send Money
-  const handleSendMoney = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const { receiverAccountNumber, amount, feeRate } = formData;
+ // Send Money
+const handleSendMoney = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  const { receiverAccountNumber, amount, feeRate } = formData;
 
-    if (!receiverAccountNumber || !amount || !feeRate) {
-      toast.error("Please fill out all fields.");
-      setIsSubmitting(false);
-      return;
-    }
+  if (!receiverAccountNumber || !amount || !feeRate) {
+    toast.error("Please fill out all fields.");
+    setIsSubmitting(false);
+    return;
+  }
 
-    if (receiverAccountNumber === userData.accountNumber) {
-      toast.error("You cannot send money to your own account.");
-      setIsSubmitting(false);
-      return;
-    }
+  if (receiverAccountNumber === userData.accountNumber) {
+    toast.error("You cannot send money to your own account.");
+    setIsSubmitting(false);
+    return;
+  }
 
-    try {
-      const senderAccountNumber = userData.accountNumber;
-      const response = await axios.post(
-        "https://backend-bora.onrender.com/transaction/transaction",
-        {
-          senderAccountNumber,
-          receiverAccountNumber,
-          amount: Number(amount),
-          feeRate: Number(feeRate),
-        },
-        { withCredentials: true }
-      );
+  try {
+    const senderAccountNumber = userData.accountNumber;
+    const response = await axios.post(
+      "https://backend-bora.onrender.com/transaction/transaction",
+      {
+        senderAccountNumber,
+        receiverAccountNumber,
+        amount: Number(amount),
+        feeRate: Number(feeRate),
+      },
+      { withCredentials: true }
+    );
 
-      toast.success("Transaction successfully");
+    if (response.data.ok) {
+      toast.success("Transaction successful");
       handleCloseModal("send");
 
-      // Refresh user data
+      // Refresh user data for both sender and receiver
       const userId = localStorage.getItem("userId");
-      const userResponse = await axios.get(`https://backend-bora.onrender.com/user/${userId}`, { withCredentials: true });
-      setUserData(userResponse.data.data);
+      const senderResponse = await axios.get(`https://backend-bora.onrender.com/user/${userId}`, { withCredentials: true });
+      setUserData(senderResponse.data.data);
 
-    } catch (error) {
-      console.error("Error creating transaction:", error);
+      // Refresh receiver data as well
+      const receiverResponse = await axios.get(`https://backend-bora.onrender.com/user/${receiverAccountNumber}`, { withCredentials: true });
+      if (receiverResponse.data.ok) {
+        setUserData((prev: any) => ({
+          ...prev,
+          receiverData: receiverResponse.data.data
+        }));
+      }
+
+    } else {
       toast.error("Failed to create transaction");
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  } catch (error) {
+    console.error("Error creating transaction:", error);
+    toast.error("Failed to create transaction");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   // Desposit Money
   const handleDeposit = async (e: React.FormEvent) => {
@@ -320,7 +333,7 @@ export default function Dashboard() {
             <span className="text-white text-lg font-bold">{formatNumber(userData.balance, true)}</span>
             <div className="flex justify-between items-center mt-1 gap-3">
               <span className="text-white">MetaBalance<br />{formatNumber(userData.value)}</span>
-              <span className="text-white">Public Rate<br />{formatNumber(userData.public_rate)}%</span>
+              <span className="text-white">Overall Rate<br />{formatNumber(userData.public_rate)}%</span>
             </div>
             <div className="flex justify-end mt-3">
               <Network className="h-4 w-4 ml-2 transform rotate-45" />
@@ -351,83 +364,91 @@ export default function Dashboard() {
     </div>
     
     {/* Chart Section */}
-    <div className="mt-6 sm:mt-10 w-full md:w-[60%] xl:w-[50%] p-4">
+    {/* <div className="mt-6 sm:mt-10 w-full md:w-[60%] xl:w-[50%] p-4">
       <h2 className="text-lg sm:text-xl font-bold mb-4">Account Balance Over Time</h2>
       <Line
         data={{
-          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          labels:['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
           datasets: [
             {
               label: 'Value Over Time',
               data: [userData.value],
-              fill: false,
+              // fill: false,
               backgroundColor: 'rgba(255,159,64,0.4)',
               borderColor: 'rgba(255,159,64,1)',
-            },
+            }, 
             {
               label: 'Balance Over Time',
               data: [userData.balance],
-              fill: false,
+              // fill: false,
               backgroundColor: 'rgba(75,192,192,0.4)',
               borderColor: 'rgba(75,192,192,1)',
             },
           ],
         }}
       />
-    </div>
+    </div> */}
 
     {/* History Section */}
     <div className="mt-6 sm:mt-10 w-full md:w-2/3 lg:w-1/2 p-4">
-      <h2 className="text-lg sm:text-xl font-bold mb-4 flex items-center text-gray-800">
-        Transaction History
-        <FontAwesomeIcon icon={faHistory} className="ml-2 text-blue-600" />
-      </h2>
-      {userData?.transactionHistory?.length > 0 ? (
-        <ul>
-          {userData.transactionHistory.map((transaction: any, index: number) => (
-            <li key={index} className="mb-6 bg-white rounded-lg shadow-md p-5 transition-transform transform hover:scale-105">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-3">
-                  <Image src={Logo} alt="Logo" className="h-8 w-8 bg-black rounded-full" />
-                  <div>
-                    <span className="font-bold text-gray-800">
-                      {userData._id === transaction.senderId ? transaction.receiverName : transaction.senderName}
-                    </span>
-                    <br />
-                    <span className="text-sm text-gray-600 font-medium">
-                      {userData._id === transaction.senderId ? "Transfer Money" : "Received Money"}
-                    </span>
-                  </div>
-                </div>
-                <div className={`${userData._id === transaction.senderId ? "text-red-600" : "text-green-600"} font-bold text-lg`}>
-                  {userData._id === transaction.senderId ? `-${formatNumber(transaction.amount, true)}` : `+${formatNumber(transaction.amount, true)}`}
-                </div>
-              </div>
-
-              <hr className="my-3" />
-
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                <div className="mb-2 sm:mb-0">
-                  <span className="block text-sm font-bold text-gray-700">Account Number:</span>
-                  <span className="text-md text-gray-800">
-                    {userData._id === transaction.senderId ? transaction.receiveraccountNumber : transaction.senderaccountNumber}
-                  </span>
-                </div>
+  <h2 className="text-lg sm:text-xl font-bold mb-4 flex items-center text-gray-800">
+    Transaction History
+    <FontAwesomeIcon icon={faHistory} className="ml-2 text-blue-600" />
+  </h2>  
+  {userData?.transactionHistory?.length > 0 ? (
+    <ul>
+      {userData.transactionHistory
+        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // Ordenar por fecha (descendente)
+        .map((transaction: any, index: number) => (
+          <li key={index} className="mb-6 bg-white rounded-lg shadow-md p-5 transition-transform transform hover:scale-105">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <Image src={Logo} alt="Logo" className="h-8 w-8 bg-black rounded-full" />
                 <div>
-                  <span className="text-sm font-bold text-gray-700">Public Rate:</span>
-                  <span className="text-blue-600 font-bold ml-2">
-                    {formatNumber(transaction.fee_rate)}%
+                  <span className="font-bold text-gray-800">
+                    {userData._id === transaction.senderId ? transaction.receiverName : transaction.senderName}
+                  </span>
+                  <br />
+                  <span className="text-sm text-gray-600 font-medium">
+                    {userData._id === transaction.senderId ? "Sent Money" : "Received Money"}
                   </span>
                 </div>
               </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="bg-white rounded-lg shadow-md p-4 text-center text-gray-500">No transactions found.</p>
-      )}
+              <div className={`${userData._id === transaction.senderId ? "text-red-600" : "text-green-600"} font-bold text-lg`}>
+                {userData._id === transaction.senderId ? `-${formatNumber(transaction.amount, true)}` : `+${formatNumber(transaction.amount, true)}`}
+              </div>
+            </div>
+
+            <hr className="my-3" />
+
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+              <div className="mb-2 sm:mb-0">
+                <span className="block text-sm font-bold text-gray-700">Account Number:</span>
+                <span className="text-md text-gray-800">
+                  {userData._id === transaction.senderId ? transaction.receiveraccountNumber : transaction.senderaccountNumber}
+                </span>
+              </div>
+              <div>
+                <span className="text-blue-600 font-bold ml-2">
+                  {new Date(transaction.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',  
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                  })}
+                </span>
+              </div>
+            </div>
+          </li>
+        ))}
+    </ul>
+  ) : (
+    <p className="bg-white rounded-lg shadow-md p-4 text-center text-gray-500">No transactions found.</p>
+  )}
     </div>
-    {/* End History Section */}
+   {/* End History Section */}
+
   </div>
 ) : (
   <p>No user data found.</p>
