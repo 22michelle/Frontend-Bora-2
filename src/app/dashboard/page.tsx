@@ -58,6 +58,7 @@ export default function Dashboard() {
   const [showSendModal, setShowSendModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   
   const [formData, setFormData] = useState({
     receiverAccountNumber: "",
@@ -391,68 +392,146 @@ const handleSendMoney = async (e: React.FormEvent) => {
 
     {/* History Section */}
     <div className="mt-6 sm:mt-10 w-full md:w-2/3 lg:w-1/2 p-4">
-  <h2 className="text-lg sm:text-xl font-bold mb-4 flex items-center text-gray-800">
+    <div className='flex items-center justify-between mb-4'>
+  <h2 className="text-lg sm:text-xl font-bold text-gray-800 flex items-center">
     Transaction History
     <FontAwesomeIcon icon={faHistory} className="ml-2 text-blue-600" />
-  </h2>  
+  </h2>
+  <button
+    onClick={() => setShowModal(true)} 
+    className="text-lg font-bold text-gray-800 cursor-pointer underline">
+    See More
+  </button>
+</div>
+  
   {userData?.transactionHistory?.length > 0 ? (
-    <ul>
-      {userData.transactionHistory
-        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // Ordenar por fecha (descendente)
-        .map((transaction: any, index: number) => (
-          <li key={index} className="mb-6 bg-white rounded-lg shadow-md p-5 transition-transform transform hover:scale-105">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-3">
-                <Image src={Logo} alt="Logo" className="h-8 w-8 bg-black rounded-full" />
-                <div>
-                  <span className="font-bold text-gray-800">
-                    {userData._id === transaction.senderId ? transaction.receiverName : transaction.senderName}
+    <>
+      <ul>
+        {userData.transactionHistory
+          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .slice(0, 3) // Mostrar solo las primeras 3 transacciones
+          .map((transaction: any, index: number) => (
+            <li key={index} className="mb-6 bg-white rounded-lg shadow-md p-5 transition-transform transform hover:scale-105">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-3">
+                  <Image src={Logo} alt="Logo" className="h-8 w-8 bg-black rounded-full" />
+                  <div>
+                    <span className="font-bold text-gray-800">
+                      {userData._id === transaction.senderId ? transaction.receiverName : transaction.senderName}
+                    </span>
+                    <br />
+                    <span className="text-sm text-gray-600 font-medium">
+                      {userData._id === transaction.senderId ? "Sent Money" : "Received Money"}
+                    </span>
+                  </div>
+                </div>
+                <div className={`${userData._id === transaction.senderId ? "text-red-600" : "text-green-600"} font-bold text-lg`}>
+                  {userData._id === transaction.senderId ? `-${formatNumber(transaction.amount, true)}` : `+${formatNumber(transaction.amount, true)}`}
+                </div>
+              </div>
+
+              <hr className="my-3" />
+
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                <div className="mb-2 sm:mb-0">
+                  <span className="block text-sm font-bold text-gray-700">Account Number:</span>
+                  <span className="text-md text-gray-800">
+                    {userData._id === transaction.senderId ? transaction.receiveraccountNumber : transaction.senderaccountNumber}
                   </span>
-                  <br />
-                  <span className="text-sm text-gray-600 font-medium">
-                    {userData._id === transaction.senderId ? "Sent Money" : "Received Money"}
+                </div>
+                <div className='p-1 ml-10'>
+                  <span className="text-blue-600 font-bold">
+                    {new Date(transaction.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',  
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                    })}
                   </span>
                 </div>
               </div>
-              <div className={`${userData._id === transaction.senderId ? "text-red-600" : "text-green-600"} font-bold text-lg`}>
-                {userData._id === transaction.senderId ? `-${formatNumber(transaction.amount, true)}` : `+${formatNumber(transaction.amount, true)}`}
-              </div>
-            </div>
-
-            <hr className="my-3" />
-
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-              <div className="mb-2 sm:mb-0">
-                <span className="block text-sm font-bold text-gray-700">Account Number:</span>
-                <span className="text-md text-gray-800">
-                  {userData._id === transaction.senderId ? transaction.receiveraccountNumber : transaction.senderaccountNumber}
-                </span>
-              </div>
-              <div>
-                <span className="text-blue-600 font-bold ml-2">
-                  {new Date(transaction.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',  
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                  })}
-                </span>
-              </div>
-            </div>
-          </li>
-        ))}
-    </ul>
+            </li>
+          ))}
+      </ul>
+    </>
   ) : (
     <p className="bg-white rounded-lg shadow-md p-4 text-center text-gray-500">No transactions found.</p>
   )}
-    </div>
-   {/* End History Section */}
-
+</div>
+    {/* End History Section */}
   </div>
 ) : (
   <p>No user data found.</p>
 )}
+
+{/* Transaction History Modal */}
+{showModal && (
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg overflow-hidden transition-transform transform">
+      <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-800 flex items-center">
+        Transaction History
+        <FontAwesomeIcon icon={faHistory} className="ml-2 text-blue-600" />
+      </h2>
+
+      {/* Scrollable transaction list with max height */}
+      <div className="max-h-96 p-5 overflow-y-auto overflow-x-hidden custom-scrollbar">
+        <ul>
+          {userData.transactionHistory
+            .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            .map((transaction: any, index: number) => (
+              <li key={index} className="mb-4 bg-gray-100 rounded-lg shadow p-4 transition-transform hover:scale-105">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-3">
+                    <Image src={Logo} alt="Logo" className="h-8 w-8 bg-black rounded-full" />
+                    <div>
+                      <span className="font-bold text-gray-800">
+                        {userData._id === transaction.senderId ? transaction.receiverName : transaction.senderName}
+                      </span>
+                      <br />
+                      <span className="text-sm text-gray-600 font-medium">
+                        {userData._id === transaction.senderId ? "Sent Money" : "Received Money"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className={`${userData._id === transaction.senderId ? "text-red-600" : "text-green-600"} font-bold text-lg`}>
+                    {userData._id === transaction.senderId ? `-${formatNumber(transaction.amount, true)}` : `+${formatNumber(transaction.amount, true)}`}
+                  </div>
+                </div>
+
+                <hr className="my-3" />
+
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                <div className="mb-2 sm:mb-0">
+                  <span className="block text-sm font-bold text-gray-700">Account Number:</span>
+                  <span className="text-md text-gray-800">
+                    {userData._id === transaction.senderId ? transaction.receiveraccountNumber : transaction.senderaccountNumber}
+                  </span>
+                </div>
+                <div className='p-1 ml-10'>
+                  <span className="text-blue-600 font-bold">
+                    {new Date(transaction.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',  
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                    })}
+                  </span>
+                </div>
+              </div>
+              </li>
+            ))}
+        </ul>
+      </div>
+
+      <button onClick={() => setShowModal(false)} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+        Close
+      </button>
+    </div>
+  </div>
+)}
+{/* End Transaction History Modal */}
 
 {/* Send Money Modal */}
 {showSendModal && (
