@@ -39,8 +39,8 @@ const formatNumber = (value: number | string | null | undefined, isBalance: bool
     if (isBalance) {
       // Balance COP (Pesos Colombianos)
       return numberValue % 1 === 0 
-      ? `$${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2 }).format(numberValue).replace('.', ',')}` // Formato sin decimales, pero siempre con dos decimales
-      : `$${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(numberValue).replace('.', ',')}`; // Formato con dos decimales
+      ? `$${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2 }).format(numberValue).replace('.', '.')}`
+      : `$${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(numberValue).replace(',', '.')}`; 
     } else {
       // Para otros valores
       return numberValue % 1 === 0 
@@ -159,8 +159,8 @@ export default function Dashboard() {
     stateSetter((prev: any) => ({ ...prev, [name]: value }));
   };
 
- // Send Money
-const handleSendMoney = async (e: React.FormEvent) => {
+  // Send Money
+  const handleSendMoney = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsSubmitting(true);
   const { receiverAccountNumber, amount, feeRate } = formData;
@@ -194,20 +194,10 @@ const handleSendMoney = async (e: React.FormEvent) => {
       toast.success("Transaction successful");
       handleCloseModal("send");
 
-      // Refresh user data for both sender and receiver
+      // Update data 
       const userId = localStorage.getItem("userId");
       const senderResponse = await axios.get(`https://backend-bora.onrender.com/user/${userId}`, { withCredentials: true });
       setUserData(senderResponse.data.data);
-
-      // Refresh receiver data as well
-      const receiverResponse = await axios.get(`https://backend-bora.onrender.com/user/${receiverAccountNumber}`, { withCredentials: true });
-      if (receiverResponse.data.ok) {
-        setUserData((prev: any) => ({
-          ...prev,
-          receiverData: receiverResponse.data.data
-        }));
-      }
-
     } else {
       toast.error("Failed to create transaction");
     }
@@ -217,7 +207,7 @@ const handleSendMoney = async (e: React.FormEvent) => {
   } finally {
     setIsSubmitting(false);
   }
-};
+  };
 
   // Desposit Money
   const handleDeposit = async (e: React.FormEvent) => {
@@ -307,8 +297,8 @@ const handleSendMoney = async (e: React.FormEvent) => {
   return (
     <>
   <Header isDashboardPage={true} />
-  <section className="flex flex-col items-center justify-center p-4 sm:p-8">
-  <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-8 text-center">Welcome, {userData ? userData.name : 'User'}!</h1>
+  <section className="flex flex-col items-center justify-center p-4 sm:p-1">
+  <h1 className="text-xl sm:text-2xl font-bold sm:mb-3 text-center">Welcome, {userData ? userData.name : 'User'}!</h1>
 
   {loading ? (
   <p>Loading user data...</p>
@@ -316,7 +306,7 @@ const handleSendMoney = async (e: React.FormEvent) => {
   <div className="flex flex-col md:flex-row justify-center items-start w-full">
     {/* Credit Card */}
     <div className="mt-6 sm:mt-10 w-full sm:w-[90%] md:w-[40%] xl:w-[30%] relative p-4 sm:p-6 lg:p-8">
-      <motion.div className="max-w-full mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-4 relative overflow-hidden">
+      <motion.div className="max-w-full mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-8 relative overflow-hidden">
         <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
         <div className="flex justify-end items-center relative z-10">
           <span className="text-white text-lg font-bold">Bora</span>
@@ -409,7 +399,7 @@ const handleSendMoney = async (e: React.FormEvent) => {
       <ul>
         {userData.transactionHistory
           .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-          .slice(0, 3) // Mostrar solo las primeras 3 transacciones
+          .slice(0, 3)
           .map((transaction: any, index: number) => (
             <li key={index} className="mb-6 bg-white rounded-lg shadow-md p-5 transition-transform transform hover:scale-105">
               <div className="flex justify-between items-center">
@@ -436,7 +426,10 @@ const handleSendMoney = async (e: React.FormEvent) => {
                 <div className="mb-2 sm:mb-0">
                   <span className="block text-sm font-bold text-gray-700">Account Number:</span>
                   <span className="text-md text-gray-800">
-                    {userData._id === transaction.senderId ? transaction.receiveraccountNumber : transaction.senderaccountNumber}
+                  {userData._id === transaction.senderId 
+                   ? transaction.receiveraccountNumber 
+                   : transaction.senderaccountNumber
+                   }
                   </span>
                 </div>
                 <div className='p-1 ml-10'>
