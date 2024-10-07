@@ -27,10 +27,13 @@ export const Hero = () => {
               <Link href="/signup">
               <button className="btn btn-primary hover:bg-[#001E80] border-none">
                 Get started
-              </button></Link>
-              <button className="btn btn-text border-black gap-1">
-                <span>How it works?</span> <ArrowIcon className="h-5 w-5" />
               </button>
+              </Link>
+               <Link href="#tutorial">
+               <button className="btn btn-text hover:bg-[#001e8018] border-black gap-1">
+                How it works? <ArrowIcon className="h-5 w-5" />
+              </button>
+              </Link>
             </div>
           </div>
 

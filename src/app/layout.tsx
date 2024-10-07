@@ -9,9 +9,6 @@ const dmSans = DM_Sans({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Bora",
   description: "May your connections be stronger",
-  icons: {
-    icon: "./Logo2.png",
-  }
 };
 
 export default function RootLayout({
@@ -22,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="relative">
       <head>
-        <link rel="shortcut icon" href="./logo2.png" type="image/x-icon" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       </head>
       <body className={clsx(dmSans.className, "antialiased bg-[#EAEEFE] text-black")}>
         {children}
