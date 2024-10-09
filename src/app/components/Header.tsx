@@ -89,10 +89,10 @@ export const Header = ({ isDashboardPage = false, isLoginPage = false, isSignupP
             ) : (
               <>
                 <Link href="#features">Features</Link>
-                <Link href="#about">About</Link>
                 {/* <Link href="#testimonials">Testimonials</Link> */}
                 <Link href="#contact">Contact Us</Link>
                 <Link href="/signup" className="underline text-[#001E80] sm:font-bold">Sign Up</Link>
+                <Link href="/login" className="underline text-[#001E80] sm:font-bold">Log In</Link>
                 <Link href="/">
                 <button className="btn btn-primary hover:bg-[#001E80] text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight" onClick={closeMenu}>
                   Get the app
@@ -136,10 +136,10 @@ export const Header = ({ isDashboardPage = false, isLoginPage = false, isSignupP
                 ) : (
                   <>
                     <Link href="#features" onClick={closeMenu}>Features</Link>
-                    <Link href="#about" onClick={closeMenu}>About</Link>
                     {/* <Link href="#testimonials" onClick={closeMenu}>Testimonials</Link> */}
                     <Link href="#contact" onClick={closeMenu}>Contact Us</Link>
                     <Link href="/signup" className="underline text-[#001E80] sm:font-bold" onClick={closeMenu}>Sign Up</Link>
+                    <Link href="/login" className="underline text-[#001E80] sm:font-bold">Log In</Link>
                     <Link href="/">
                    <button className="btn btn-primary hover:bg-[#001E80] text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight" onClick={closeMenu}>
                       Get the app
