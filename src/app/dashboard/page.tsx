@@ -451,7 +451,7 @@ export default function Dashboard() {
   ) : (
     <p className="bg-white rounded-lg shadow-md p-4 text-center text-gray-500">No transactions found.</p>
   )}
-</div>
+    </div>
     {/* End History Section */}
   </div>
 ) : (
@@ -538,7 +538,7 @@ export default function Dashboard() {
           placeholder="Recipient Account Number"
           value={formData.receiverAccountNumber}
           onChange={(e) => handleInputChange(e, setFormData)}
-          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-blue-500"
+          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-blue-500 transition duration-200"
         />
         <input
           type="number"
@@ -546,16 +546,37 @@ export default function Dashboard() {
           placeholder="Amount"
           value={formData.amount}
           onChange={(e) => handleInputChange(e, setFormData)}
-          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-blue-500"
+          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-blue-500 transition duration-200"
         />
-        <input
-          type="number"
-          name="feeRate"
-          placeholder="Fee Rate (%)"
-          value={formData.feeRate}
-          onChange={(e) => handleInputChange(e, setFormData)}
-          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-blue-500"
-        />
+        <div className="relative">
+          <label className="block text-gray-700 mb-1">Fee Rate (%)</label>
+          <input
+            type="number"
+            name="feeRate"
+            placeholder="Fee Rate (%)"
+            value={formData.feeRate}
+            onChange={(e) => handleInputChange(e, setFormData)}
+            className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-blue-500 transition duration-200 mb-2"
+          />
+          
+          {/* Modern Slider for Fee Rate */}
+          <input
+            type="range"
+            name="feeRateSlider"
+            min="1"
+            max="10"
+            value={formData.feeRate}
+            onChange={(e) => {
+              const newFeeRate = e.target.value;
+              setFormData({ ...formData, feeRate: newFeeRate });
+            }}
+            className="slider w-full h-2 bg-gray-200 rounded-lg cursor-pointer appearance-none"
+          />
+          <div className="flex justify-between text-xs text-gray-600">
+            <span>1%</span>
+            <span>10%</span>
+          </div>
+        </div>
       </div>
       <div className="flex justify-end mt-6 space-x-4">
         <button
@@ -565,7 +586,7 @@ export default function Dashboard() {
           Cancel
         </button>
         <button
-          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300 flex items-center justify-center"
+          className={`bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300 flex items-center justify-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
           onClick={handleSendMoney}
           disabled={isSubmitting}
         >
@@ -579,6 +600,7 @@ export default function Dashboard() {
     </div>
   </div>
 )}
+
 {/* Deposit Money Modal */}
 {showDepositModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
