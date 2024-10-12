@@ -146,7 +146,7 @@ const FormHelp: React.FC<FormHelpProps> = ({ id }) => {
                   placeholder="First Name"
                   onChange={handleChange}
                   required
-                  className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring focus:ring-blue-500"
+                  className="border border-gray-300 rounded-md px-4 py-2 w-full"
                 />
               </div>
               <div className="w-full">
@@ -161,7 +161,7 @@ const FormHelp: React.FC<FormHelpProps> = ({ id }) => {
                   placeholder="Last Name"
                   onChange={handleChange}
                   required
-                  className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring focus:ring-blue-500"
+                  className="border border-gray-300 rounded-md px-4 py-2 w-full"
                 />
               </div>
             </div>
@@ -178,7 +178,7 @@ const FormHelp: React.FC<FormHelpProps> = ({ id }) => {
                 placeholder="Email"
                 onChange={handleChange}
                 required
-                className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring focus:ring-blue-500"
+                className="border border-gray-300 rounded-md px-4 py-2 w-full"
               />
             </div>
 
@@ -193,7 +193,7 @@ const FormHelp: React.FC<FormHelpProps> = ({ id }) => {
                 placeholder="How can we help?"
                 onChange={handleChange}
                 required
-                className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring focus:ring-blue-500 h-32 resize-none"
+                className="border border-gray-300 rounded-md px-4 py-2 w-full h-32 resize-none"
               ></textarea>
             </div>
 
