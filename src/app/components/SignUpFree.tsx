@@ -60,12 +60,14 @@ export const SignUpFree = () => {
               <button className="btn btn-primary hover:bg-[#001E80] border-none">
                 Get started
               </button></Link>
-          <button className="btn border-black flex items-center">
+          <Link href="#tutorial">   
+           <button className="btn border-black flex items-center">
             <span className="me-1">How it works?</span>
             <ArrowRight className="h-5 w-5" width={20} height={20} />
-          </button>
+           </button>
+          </Link>
         </div>
       </div>
     </section>
-  );
+  ); 
 };

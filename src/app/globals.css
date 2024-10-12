@@ -55,7 +55,7 @@
 
   @layer components {
     .spinner {
-      @apply border-2 border-t-4 border-t-white border-gray-200 rounded-lg w-5 h-5 animate-spin;
+      @apply border-2 border-t-4 border-t-white border-gray-200 rounded-full w-5 h-5 animate-spin;
     }
   
     @keyframes spin {

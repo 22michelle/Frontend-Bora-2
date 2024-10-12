@@ -563,7 +563,7 @@ export default function Dashboard() {
           <input
             type="range"
             name="feeRateSlider"
-            min="1"
+            min="0"
             max="10"
             value={formData.feeRate}
             onChange={(e) => {
@@ -573,7 +573,7 @@ export default function Dashboard() {
             className="slider w-full h-2 bg-gray-200 rounded-lg cursor-pointer appearance-none"
           />
           <div className="flex justify-between text-xs text-gray-600">
-            <span>1%</span>
+            <span>0%</span>
             <span>10%</span>
           </div>
         </div>
