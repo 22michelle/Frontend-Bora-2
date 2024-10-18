@@ -108,25 +108,27 @@ const FormHelp: React.FC<FormHelpProps> = ({ id }) => {
            <span className="text-gray-700 font-medium">resilenciabora@gmail.com</span>
           </div>
 
-           {/* Column 2: Country */}
+          {/* Column 2: Country */}
          <div className="flex items-center">
           <FontAwesomeIcon icon={faGlobe} className="mr-2 text-blue-600" />
           <span className="text-gray-700 font-medium">Colombia</span>
          </div>
 
           {/* Column 1: Phone */}
-        <div className="flex items-center">
+         <div className="flex items-center">
           <FontAwesomeIcon icon={faPhone} className="mr-2 text-blue-600" />
           <span className="text-gray-700 font-medium">+57 123 456 7890</span>
-       </div>
+         </div>
 
-    {/* Column 2: Opening hours */}
-    <div className="flex items-center">
-      <FontAwesomeIcon icon={faClock} className="mr-2 text-blue-600" />
-      <span className="text-gray-700 font-medium">Mon-Fri: 9am - 6pm</span>
-    </div>
+         {/* Column 2: Opening hours */}
+         <div className="flex items-center">
+          <FontAwesomeIcon icon={faClock} className="mr-2 text-blue-600" />
+          <span className="text-gray-700 font-medium">Mon-Fri: 9am - 6pm</span>
+         </div>
+
           </div>
-       </div>
+
+          </div>
 
           {/* Form */}
           <form

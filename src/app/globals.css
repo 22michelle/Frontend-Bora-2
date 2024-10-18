@@ -126,3 +126,20 @@
   .slider-label {
     @apply absolute top-0 flex justify-between text-xs text-gray-600 w-full;
   }
+
+  .illuminated {
+    animation: glow 0.5s ease-in-out infinite alternate;
+  }
+  
+  @keyframes glow {
+    from {
+      color: #ffffff; /* Blanco */
+      text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff;
+    }
+    to {
+      color: rgba(0, 30, 128, 0.09); /* Gris transparente */
+      text-shadow: 0 0 20px rgba(192, 192, 192, 0.5), 0 0 30px rgba(192, 192, 192, 0.5), 0 0 40px rgba(192, 192, 192, 0.5); /* Sombra gris */
+    }
+  }
+  
+  
