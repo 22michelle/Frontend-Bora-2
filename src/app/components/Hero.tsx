@@ -78,7 +78,15 @@ export const Hero = () => {
 
           <div className="mt-[100px] md:mt-0 md:w-1/2 md:pl-10 relative">
             <motion.div
-              className="max-w-xs mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-6 relative overflow-hidden"
+             className="max-w-xs mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-6 relative overflow-hidden"
+             initial={{ y: 0 }} // Initial position
+             animate={{ y: [0, -5, 0] }} // Bounce effect
+             transition={{
+               duration: 1.5, // Duration of the bounce cycle
+               ease: "easeInOut", // Easing function for smoothness
+               repeat: Infinity, // Repeat the bounce indefinitely
+               repeatType: "loop", // Loop the animation
+             }}
             >
               <div className="absolute inset-0 rounded-lg shadow-lg blur-md opacity-30 bg-black"></div>
               <div className="flex justify-end items-center relative z-10">
