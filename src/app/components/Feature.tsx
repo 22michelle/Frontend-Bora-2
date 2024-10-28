@@ -30,7 +30,8 @@ export const Feature: React.FC<FeatureProps> = ({ id }) => {
               </svg>
             </div>
             <p className="text-lg">
-              Our algorithm tries to match your balance to your metabalance by sharing everyones voluntary fees.
+            Our algorithm matches your balance to your metabalance bit by
+            bit by sharing everyones voluntary fees
             </p>
           </div>
           <div className="flex items-start">
