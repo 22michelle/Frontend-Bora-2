@@ -11,10 +11,10 @@ import Link from "next/link";
 
 export const Footer = () => {
   return (
-    <footer className="bg-black text-[#BCBCBC] text-sm py-10 text-center">
-      <div className="container">
+    <footer className="bg-black text-[#BCBCBC] text-sm py-10">
+      <div className="container mx-auto text-center">
         {/* Logo Section */}
-        <div className="inline-flex relative">
+        <div className="inline-flex relative mb-6">
           <div className="relative before:content-[''] before:absolute before:inset-0 before:bg-white before:opacity-20 before:blur-lg before:rounded-lg">
             <Image
               src={Logo}
@@ -26,25 +26,27 @@ export const Footer = () => {
         </div>
 
         {/* Demo Description */}
-        <p className="mt-6 flex items-center justify-center">
+        <p className="mt-6">
           This is a functional demo to the idea proposed at
         </p>
 
         {/* Social Links Section */}
-        <div className="flex flex-col md:flex-row md:justify-center gap-6 mt-6">
+        <div className="flex justify-center items-center gap-6 mt-6">
           <a
             target="_blank"
             rel="noopener noreferrer"
             href="https://www.oasis-of-ideas.com/ideas/building-cooperative-networks-of-digital-transactions/"
+            className="flex items-center"
           >
-            <Image alt="Oasis" src={SocialOasis} className="mr-2 w-6 h-6" />
+            <Image alt="Oasis" src={SocialOasis} className="w-8 h-8 md:w-6 md:h-6" />
           </a>
           <a
             target="_blank"
             rel="noopener noreferrer"
             href="https://www.reddit.com/r/fintech/comments/1d2s7u4/resilience_cooperative_transaction_networks/"
+            className="flex items-center"
           >
-            <Image alt="Reddit" src={SocialReddit} className="mr-2 w-6 h-6" />
+            <Image alt="Reddit" src={SocialReddit} className="w-8 h-8 md:w-6 md:h-6" />
           </a>
         </div>
 
@@ -54,15 +56,6 @@ export const Footer = () => {
           <Link href="#about">About</Link>
           <Link href="#contact">Contact Us</Link>
         </nav>
-
-        {/* Social Media Icons */}
-        {/* <div className="flex justify-center gap-6 mt-6">
-          <SocialInsta />
-          <SocialLinkedIn />
-          <SocialX />
-          <SocialPin />
-          <SocialYoutube />
-        </div> */}
 
         {/* Copyright Section */}
         <p className="mt-6">
