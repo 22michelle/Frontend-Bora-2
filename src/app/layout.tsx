@@ -9,6 +9,11 @@ const dmSans = DM_Sans({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Bora",
   description: "May your connections be stronger",
+  icons:{
+    icon: ["/favicon.ico?v=4"],
+    apple: ["/apple-touch-icon.png?=4"],
+    shortcut: ["/apple-touch-icon.png"]
+  }
 };
 
 export default function RootLayout({
@@ -18,9 +23,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="relative">
-      <head>
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      </head>
       <body className={clsx(dmSans.className, "antialiased bg-[#EAEEFE] text-black")}>
         {children}
         <ToastContainer />
