@@ -142,4 +142,19 @@
     }
   }
   
+  .arrow {
+    @apply text-blue-600 text-3xl cursor-pointer; /* Cambia el tamaño y color */
+    width: 50px; /* Tamaño de las flechas */
+    height: 50px; /* Tamaño de las flechas */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   
+  .left-arrow {
+    left: -60px; /* Ajusta la posición a la izquierda */
+  }
+
+  .right-arrow {
+    right: -60px; /* Ajusta la posición a la derecha */
+  }

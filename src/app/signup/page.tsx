@@ -103,7 +103,7 @@ export default function SignUp() {
     <>
     <Header isSignupPage={true} />
     <section
-    className="py-5 overflow-clip relative">
+    className="py-5 overflow-clip relative mb-24">
         <div className="container">
       <div className="flex gap-2 justify-center">
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-8 z-10">
