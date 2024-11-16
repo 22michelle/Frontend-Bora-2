@@ -649,7 +649,7 @@ export default function Dashboard() {
 
 {/* Deposit Money Modal */}
 {showDepositModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Deposit Money</h2>
       <div className="space-y-4">
@@ -687,7 +687,7 @@ export default function Dashboard() {
 
 {/* Withdraw Money Modal */}
 {showWithdrawModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Withdraw Money</h2>
       <div className="space-y-4">
