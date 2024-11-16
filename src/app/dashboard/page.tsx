@@ -56,9 +56,12 @@ export default function Dashboard() {
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showSendModal, setShowSendModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  const [confirmation, setConfirmation] = useState(false);
 
   const [formData, setFormData] = useState({
     receiverAccountNumber: "",
@@ -160,8 +163,8 @@ export default function Dashboard() {
   };
 
   // Send Money
-  const handleSendMoney = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSendMoney = async () => {
+  // e.preventDefault();
   setIsSubmitting(true);
   const { receiverAccountNumber, amount, feeRate } = formData;
 
@@ -407,11 +410,15 @@ export default function Dashboard() {
                   <Image src={Logo} alt="Logo" className="h-8 w-8 bg-black rounded-full" />
                   <div>
                     <span className="font-bold text-gray-800">
-                      {userData._id === transaction.senderId ? transaction.receiverName : transaction.senderName}
+                      {userData._id === transaction.senderId
+                      ? `Sent to:`
+                      : `Received from:`}
                     </span>
                     <br />
-                    <span className="text-sm text-gray-600 font-medium">
-                      {userData._id === transaction.senderId ? "Sent Money" : "Received Money"}
+                    <span>
+                      {userData._id === transaction.senderId
+                      ? transaction.receiverName
+                      : transaction.senderName}
                     </span>
                   </div>
                 </div>
@@ -426,17 +433,17 @@ export default function Dashboard() {
                 <div className="mb-2 sm:mb-0">
                   <span className="block text-sm font-bold text-gray-700">Account Number:</span>
                   <span className="text-md text-gray-800">
-                  {userData._id === transaction.senderId 
-                   ? transaction.receiveraccountNumber 
-                   : transaction.senderaccountNumber
-                   }
+                  {userData._id === transaction.senderId
+                    ? transaction.receiveraccountNumber
+                    : transaction.senderaccountNumber
+                  }
                   </span>
                 </div>
                 <div className='p-1 ml-10'>
                   <span className="text-blue-600 font-bold">
                     {new Date(transaction.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',
-                      month: 'long',  
+                      month: 'long',
                       day: 'numeric',
                       hour: 'numeric',
                       minute: 'numeric',
@@ -478,14 +485,18 @@ export default function Dashboard() {
                   <div className="flex items-center space-x-3">
                     <Image src={Logo} alt="Logo" className="h-8 w-8 bg-black rounded-full" />
                     <div>
-                      <span className="font-bold text-gray-800">
-                        {userData._id === transaction.senderId ? transaction.receiverName : transaction.senderName}
-                      </span>
-                      <br />
-                      <span className="text-sm text-gray-600 font-medium">
-                        {userData._id === transaction.senderId ? "Sent Money" : "Received Money"}
-                      </span>
-                    </div>
+                    <span className="font-bold text-gray-800">
+                      {userData._id === transaction.senderId
+                      ? `Sent to:`
+                      : `Received from:`}
+                    </span>
+                    <br />
+                    <span>
+                      {userData._id === transaction.senderId
+                      ? transaction.receiverName
+                      : transaction.senderName}
+                    </span>
+                  </div>
                   </div>
                   <div className={`${userData._id === transaction.senderId ? "text-red-600" : "text-green-600"} font-bold text-lg`}>
                     {userData._id === transaction.senderId ? `-${formatNumber(transaction.amount, true)}` : `+${formatNumber(transaction.amount, true)}`}
@@ -505,7 +516,7 @@ export default function Dashboard() {
                   <span className="text-blue-600 font-bold">
                     {new Date(transaction.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',
-                      month: 'long',  
+                      month: 'long',
                       day: 'numeric',
                       hour: 'numeric',
                       minute: 'numeric',
@@ -526,9 +537,8 @@ export default function Dashboard() {
 )}
 {/* End Transaction History Modal */}
 
-{/* Send Money Modal */}
 {showSendModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Send Money</h2>
       <div className="space-y-4">
@@ -558,8 +568,6 @@ export default function Dashboard() {
             onChange={(e) => handleInputChange(e, setFormData)}
             className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-blue-500 transition duration-200 mb-2"
           />
-          
-          {/* Modern Slider for Fee Rate */}
           <input
             type="range"
             name="feeRateSlider"
@@ -587,7 +595,14 @@ export default function Dashboard() {
         </button>
         <button
           className={`bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300 flex items-center justify-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-          onClick={handleSendMoney}
+          onClick={() => {
+            const { receiverAccountNumber, amount, feeRate } = formData;
+            if (!receiverAccountNumber || !amount || !feeRate) {
+              toast.error("Please fill out all fields.");
+              return;
+            }
+            setShowConfirmationModal(true);
+          }}
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -595,6 +610,37 @@ export default function Dashboard() {
           ) : (
             "Send"
           )}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Confirmation Modal */}
+{showConfirmationModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 sm:p-8 lg:p-20">
+    <div className="bg-white p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-md sm:max-w-sm lg:max-w-lg">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">Confirm Transaction</h2>
+      <p className="text-gray-600 mb-6">
+        Are you sure you want to send <strong>${formData.amount}</strong> to account
+        <strong> {formData.receiverAccountNumber}</strong> with a fee rate of
+        <strong> {formData.feeRate}%</strong>?
+      </p>
+      <div className="flex justify-end space-x-4">
+        <button
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300"
+          onClick={() => setShowConfirmationModal(false)}
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300"
+          onClick={() => {
+            handleSendMoney();
+            setShowConfirmationModal(false);
+          }}
+        >
+          Confirm
         </button>
       </div>
     </div>
