@@ -31,7 +31,7 @@ export const Feature: React.FC<FeatureProps> = ({ id }) => {
             </div>
             <p className="text-lg">
             Our algorithm matches your balance to your metabalance bit by
-            bit by sharing everyones voluntary fees
+            bit by sharing everyone's voluntary fees
             </p>
           </div>
           <div className="flex items-start">
@@ -52,8 +52,8 @@ export const Feature: React.FC<FeatureProps> = ({ id }) => {
               </svg>
             </div>
             <p className="text-lg">To participate you just have to add some fee.
-              This changes your public rate. The higher it is,
-              the faster you receive back from the network. 
+              This sets your public rate. The higher it is,
+              the faster you receive back from the network.
             </p>
           </div>
         </div>

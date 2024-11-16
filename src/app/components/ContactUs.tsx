@@ -89,45 +89,44 @@ const FormHelp: React.FC<FormHelpProps> = ({ id }) => {
         <div className="section-heading text-center">
           <h2 className="section-title mt-5 font-bold">Contact Us</h2>
         </div>
-        
+
         {/* Responsive Contact and Form section */}
         <div className="flex flex-col md:flex-row items-start mt-10 gap-10">
           {/* Contact Info */}
           <div className="md:w-1/2 p-4 flex flex-col items-start">
             <h2 className="section-subtitle text-[24px] md:text-[30px] font-semibold">
-             We’re Here to Help
+            We’re Here to Help
             </h2>
             <p className="section-description text-gray-700 text-base md:text-lg mt-4 text-left">
-             Have questions about our platform, integrations, or anything else? Our friendly team is here to answer all your questions.
-             Reach out, and we’ll get back to you as soon as possible!
+            Have questions about our platform? Our team is here to answer all your questions.
+            Reach out and we'll get back to you as soon as possible.
             </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
            {/* Column 1: Email */}
           {/* <div className="flex items-center">
-           <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-blue-600" />
-           <span className="text-gray-700 font-medium">resilenciabora@gmail.com</span>
+          <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-blue-600" />
+          <span className="text-gray-700 font-medium">resilenciabora@gmail.com</span>
           </div> */}
 
            {/* Column 2: Country */}
           {/* <div className="flex items-center">
-           <FontAwesomeIcon icon={faGlobe} className="mr-2 text-blue-600" />
-           <span className="text-gray-700 font-medium">Colombia</span>
+          <FontAwesomeIcon icon={faGlobe} className="mr-2 text-blue-600" />
+          <span className="text-gray-700 font-medium">Colombia</span>
           </div> */}
 
            {/* Column 1: Phone */}
           {/* <div className="flex items-center">
-           <FontAwesomeIcon icon={faPhone} className="mr-2 text-blue-600" />
-           <span className="text-gray-700 font-medium">+57 123 456 7890</span>
+          <FontAwesomeIcon icon={faPhone} className="mr-2 text-blue-600" />
+          <span className="text-gray-700 font-medium">+57 123 456 7890</span>
           </div> */}
 
            {/* Column 2: Opening hours */}
           {/* <div className="flex items-center">
-           <FontAwesomeIcon icon={faClock} className="mr-2 text-blue-600" />
-           <span className="text-gray-700 font-medium">Mon-Fri: 9am - 6pm</span>
+          <FontAwesomeIcon icon={faClock} className="mr-2 text-blue-600" />
+          <span className="text-gray-700 font-medium">Mon-Fri: 9am - 6pm</span>
           </div> */}
           </div>
-      
           </div>
 
           {/* Form */}

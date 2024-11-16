@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { motion } from 'framer-motion'; 
-import Chip from '@/app/public/assets/chip-credit.svg'; 
+import { motion } from 'framer-motion';
+import Chip from '@/app/public/assets/chip-credit.svg';
 import Network from '@/app/public/assets/network.svg';
 import { Header } from '@/app/components/Header';
 import { Line } from 'react-chartjs-2';
@@ -59,21 +59,21 @@ export default function Dashboard() {
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     receiverAccountNumber: "",
     amount: "",
     feeRate: "",
   });
-  
+
   const [depositData, setDepositData] = useState({
     amount: "",
   });
-  
+
   const [withdrawData, setWithdrawData] = useState({
     amount: "",
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function Dashboard() {
       setLoading(false);
     }
   }, []);
-  
+
   const fetchUserData = async (userId: string) => {
     try {
       const userResponse = await axios.get(`https://backend-bora.onrender.com/user/${userId}`);
@@ -120,8 +120,8 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  };  
-  
+  };
+
   const handleShowModal = (modal: string) => {
     switch (modal) {
       case "send":
@@ -194,7 +194,7 @@ export default function Dashboard() {
       toast.success("Transaction successful");
       handleCloseModal("send");
 
-      // Update data 
+      // Update data
       const userId = localStorage.getItem("userId");
       const senderResponse = await axios.get(`https://backend-bora.onrender.com/user/${userId}`, { withCredentials: true });
       setUserData(senderResponse.data.data);
@@ -251,7 +251,7 @@ export default function Dashboard() {
     }
   };
 
-  // Withdraw Money 
+  // Withdraw Money
   const handleWithdraw = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -638,9 +638,10 @@ export default function Dashboard() {
     </div>
   </div>
 )}
+
 {/* Withdraw Money Modal */}
 {showWithdrawModal && (
-       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Withdraw Money</h2>
       <div className="space-y-4">
@@ -675,7 +676,7 @@ export default function Dashboard() {
     </div>
   </div>
 )}
-  </section>
+    </section>
     </>
   );
 }

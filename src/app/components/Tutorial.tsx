@@ -37,7 +37,7 @@ export const Tutorial: React.FC<TutorialProps> = ({ id }) => {
     <section id={id} className="bg-gradient-to-b from-white to-[#D2DCFF] py-10">
       <div className="container mx-auto px-4">
         <div className="section-heading text-center mb-8">
-          <h2 className="section-title font-bold">How it works?</h2>
+          <h2 className="section-title font-bold">How to use:</h2>
         </div>
         {/* Slider */}
         <div className="flex justify-center mb-8">
@@ -49,12 +49,13 @@ export const Tutorial: React.FC<TutorialProps> = ({ id }) => {
                     <Image 
                       src={item.src} 
                       alt={`Imagen ${index + 1}`} 
-                      width={500} 
-                      height={300} 
+                      width={900} // Adjusted width for better quality
+                      height={500} // Adjusted height for better quality
+                      quality={100} // Set maximum quality
                       className="w-full h-full rounded-xl" 
                     />
                   ) : (
-                    <div className="relative w-full" style={{ paddingTop: '56.25%' }}> {/* Proporción 16:9 */}
+                    <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
                       <iframe 
                         src={item.src} 
                         title={`Video ${index + 1}`} 

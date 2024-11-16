@@ -54,13 +54,16 @@ export const Hero = () => {
         <div className="md:flex md:items-start">
           <div className="md:w-[478px]">
             <div className="text-sm inline-flex border border-[#222]/10 px-3 py-1 rounded-lg tracking-tight">
-              Version is here
+              Version 2.0 is here
             </div>
             <h1 className="text-5xl font-bold tracking-tighter bg-gradient-to-b from-black to-[#001E80] text-transparent bg-clip-text mt-6">
-              ¡Bora is not just another wallet!
+              Bora is not just another wallet!
             </h1>
             <p className="text-xl text-[#010D3E] tracking-tight mt-6">
-              May your connections be stronger
+              It's the first wallet based on the resilience protocol,
+              Enabling 100%* recouping of base transactions.
+              <br />
+              May your connections be stronger!
             </p>
             <div className="flex gap-1 items-center mt-[30px]">
               <Link href="/signup">

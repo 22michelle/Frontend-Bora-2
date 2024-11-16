@@ -27,10 +27,11 @@ export const SignUpFree = () => {
     >
       <div className="container">
         <div className="section-heading relative">
-          <h2 className="section-title">Sign Up for Free Today</h2>
+          <h2 className="section-title">Sign up to check it out!</h2>
           <p className="section-description mt-5">
           Join Bora today and experience a completely new way of banking! 
-          Sign up, deposit and start making truly resilient transactions together.
+          Sign up, deposit and start making resilient
+          transactions with your friends to test it yourself.
           </p>
           <motion.div
             style={{ translateY }}
