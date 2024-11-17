@@ -58,7 +58,9 @@ export default function Dashboard() {
   const [showSendModal, setShowSendModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showConfirmDepositModal, setShowConfirmDepositModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [showConfirmWithdrawModal, setShowConfirmWithdrawModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const [confirmation, setConfirmation] = useState(false);
@@ -68,6 +70,50 @@ export default function Dashboard() {
     amount: "",
     feeRate: "",
   });
+
+  // Deposit Money Modal: Show confirmation before proceeding
+const handleDepositButtonClick = () => {
+  const { amount } = depositData;
+  if (!amount) {
+    toast.error("The amount is required");
+    return;
+  }
+  setShowConfirmDepositModal(true);  // Show confirmation modal
+};
+
+// Confirm Deposit Modal: After confirmation, handle the actual deposit
+const handleConfirmDeposit = async () => {
+  setIsSubmitting(true);
+  const { amount } = depositData;
+  const accountNumber = userData?.accountNumber;
+
+  try {
+    // Log the data before making the request
+    console.log("Sending deposit data:", { amount });
+
+    const response = await axios.post(
+      "https://backend-bora.onrender.com/transaction/deposit",
+      { amount, accountNumber }, 
+      { withCredentials: true }
+    );
+
+    console.log("Deposit response:", response.data);
+    
+    toast.success("Deposit successful");
+    setDepositData({ amount: "" });
+    setShowConfirmDepositModal(false);  // Close confirmation modal
+
+    // Refresh user data after successful deposit
+    const userId = localStorage.getItem("userId");
+    const userResponse = await axios.get(`https://backend-bora.onrender.com/user/${userId}`, { withCredentials: true });
+    setUserData(userResponse.data.data);
+  } catch (error) {
+    console.error("Error deposit money:", error);
+    toast.error("Failed to deposit money");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const [depositData, setDepositData] = useState({
     amount: "",
@@ -254,25 +300,10 @@ export default function Dashboard() {
     }
   };
 
-  // Withdraw Money
-  const handleWithdraw = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleConfirmWithdraw = async () => {
     setIsSubmitting(true);
     const { amount } = withdrawData;
     const accountNumber = userData?.accountNumber;
-
-    if (!amount || parseFloat(amount) <= 0) {
-      toast.error("The amount is required and must be greater than zero.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (!userData || parseFloat(amount) > parseFloat(userData.balance)) {
-      toast.error("Insufficient balance");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
       await axios.post(
         "https://backend-bora.onrender.com/transaction/withdraw",
@@ -282,7 +313,7 @@ export default function Dashboard() {
 
       toast.success("Withdrawal successful");
       setWithdrawData({ amount: "" });
-      handleCloseModal("withdraw");
+      setShowConfirmWithdrawModal(false);  // Close confirmation modal
 
       // Refresh user data
       const userId = localStorage.getItem("userId");
@@ -295,6 +326,27 @@ export default function Dashboard() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Withdraw Money
+  const handleWithdraw = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    const { amount } = withdrawData;
+    const accountNumber = userData?.accountNumber;
+  
+    if (!amount || parseFloat(amount) <= 0) {
+      toast.error("The amount is required and must be greater than zero.");
+      return;
+    }
+  
+    if (!userData || parseFloat(amount) > parseFloat(userData.balance)) {
+      toast.error("Insufficient balance");
+      return;
+    }
+  
+    // Show the confirmation modal before proceeding
+    setShowConfirmWithdrawModal(true);
   };
 
   return (
@@ -647,7 +699,7 @@ export default function Dashboard() {
   </div>
 )}
 
-{/* Deposit Money Modal */}
+{/* Deposit Money Modal: Trigger confirmation on click */}
 {showDepositModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
     <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
@@ -671,7 +723,7 @@ export default function Dashboard() {
         </button>
         <button
           className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300 flex items-center justify-center"
-          onClick={handleDeposit}
+          onClick={handleDepositButtonClick}  // Trigger confirmation modal
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -679,6 +731,67 @@ export default function Dashboard() {
           ) : (
             "Deposit"
           )}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Confirm Deposit Modal: Show confirmation before processing deposit */}
+{showConfirmDepositModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
+    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Confirm Deposit</h2>
+      <p className="text-gray-600 mb-6 text-center">
+        Are you sure you want to deposit <strong>${depositData.amount}</strong>?
+      </p>
+      <div className="flex justify-end mt-6 space-x-4">
+        <button
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300"
+          onClick={() => setShowConfirmDepositModal(false)}  // Close confirmation modal
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300"
+          onClick={handleConfirmDeposit}  // Confirm and process deposit
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <div className="spinner"></div>
+          ) : (
+            "Confirm"
+          )}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Confirm Withdrawal Modal: Show confirmation before processing withdrawal */}
+{showConfirmWithdrawModal && (
+  <div
+    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3"
+    style={{ zIndex: 9999 }} // Ensures the modal is on top
+  >
+    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Confirm Withdrawal</h2>
+      <p className="text-lg text-gray-700 mb-6 text-center">
+        Are you sure you want to withdraw ${withdrawData.amount}?
+      </p>
+      <div className="flex justify-center space-x-4">
+        <button
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300"
+          onClick={() => setShowConfirmWithdrawModal(false)} // Close the confirmation modal
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700"
+          onClick={handleConfirmWithdraw}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? <div className="spinner"></div> : "Confirm Withdraw"}
         </button>
       </div>
     </div>
@@ -722,7 +835,8 @@ export default function Dashboard() {
     </div>
   </div>
 )}
-    </section>
-    </>
+
+  </section>
+</>
   );
 }
