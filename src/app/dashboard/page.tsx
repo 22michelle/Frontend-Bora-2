@@ -5,17 +5,6 @@ import { motion } from 'framer-motion';
 import Chip from '@/app/public/assets/chip-credit.svg';
 import Network from '@/app/public/assets/network.svg';
 import { Header } from '@/app/components/Header';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,8 +14,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Logo from "@/app/public/assets/Logo2.png"
 import Image from 'next/image';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const formatNumber = (value: number | string | null | undefined, isBalance: boolean = false): string => {
   if (value !== undefined && value !== null) {
@@ -58,7 +45,9 @@ export default function Dashboard() {
   const [showSendModal, setShowSendModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showConfirmDepositModal, setShowConfirmDepositModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [showConfirmWithdrawModal, setShowConfirmWithdrawModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const [confirmation, setConfirmation] = useState(false);
@@ -68,6 +57,50 @@ export default function Dashboard() {
     amount: "",
     feeRate: "",
   });
+
+  // Deposit Money Modal: Show confirmation before proceeding
+const handleDepositButtonClick = () => {
+  const { amount } = depositData;
+  if (!amount) {
+    toast.error("The amount is required");
+    return;
+  }
+  setShowConfirmDepositModal(true);  // Show confirmation modal
+};
+
+// Confirm Deposit Modal: After confirmation, handle the actual deposit
+const handleConfirmDeposit = async () => {
+  setIsSubmitting(true);
+  const { amount } = depositData;
+  const accountNumber = userData?.accountNumber;
+
+  try {
+    // Log the data before making the request
+    console.log("Sending deposit data:", { amount });
+
+    const response = await axios.post(
+      "https://backend-bora.onrender.com/transaction/deposit",
+      { amount, accountNumber }, 
+      { withCredentials: true }
+    );
+
+    console.log("Deposit response:", response.data);
+    
+    toast.success("Deposit successful");
+    setDepositData({ amount: "" });
+    setShowConfirmDepositModal(false);  // Close confirmation modal
+
+    // Refresh user data after successful deposit
+    const userId = localStorage.getItem("userId");
+    const userResponse = await axios.get(`https://backend-bora.onrender.com/user/${userId}`, { withCredentials: true });
+    setUserData(userResponse.data.data);
+  } catch (error) {
+    console.error("Error deposit money:", error);
+    toast.error("Failed to deposit money");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const [depositData, setDepositData] = useState({
     amount: "",
@@ -254,25 +287,10 @@ export default function Dashboard() {
     }
   };
 
-  // Withdraw Money
-  const handleWithdraw = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleConfirmWithdraw = async () => {
     setIsSubmitting(true);
     const { amount } = withdrawData;
     const accountNumber = userData?.accountNumber;
-
-    if (!amount || parseFloat(amount) <= 0) {
-      toast.error("The amount is required and must be greater than zero.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (!userData || parseFloat(amount) > parseFloat(userData.balance)) {
-      toast.error("Insufficient balance");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
       await axios.post(
         "https://backend-bora.onrender.com/transaction/withdraw",
@@ -282,7 +300,7 @@ export default function Dashboard() {
 
       toast.success("Withdrawal successful");
       setWithdrawData({ amount: "" });
-      handleCloseModal("withdraw");
+      setShowConfirmWithdrawModal(false);  // Close confirmation modal
 
       // Refresh user data
       const userId = localStorage.getItem("userId");
@@ -297,6 +315,27 @@ export default function Dashboard() {
     }
   };
 
+  // Withdraw Money
+  const handleWithdraw = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    const { amount } = withdrawData;
+    const accountNumber = userData?.accountNumber;
+  
+    if (!amount || parseFloat(amount) <= 0) {
+      toast.error("The amount is required and must be greater than zero.");
+      return;
+    }
+  
+    if (!userData || parseFloat(amount) > parseFloat(userData.balance)) {
+      toast.error("Insufficient balance");
+      return;
+    }
+  
+    // Show the confirmation modal before proceeding
+    setShowConfirmWithdrawModal(true);
+  };
+
   return (
     <>
   <Header isDashboardPage={true} />
@@ -306,7 +345,7 @@ export default function Dashboard() {
   {loading ? (
   <p>Loading user data...</p>
 ) : userData ? (
-  <div className="flex flex-col md:flex-row justify-center items-start w-full">
+  <div className="flex flex-col md:flex-row justify-center items-center w-full">
     {/* Credit Card */}
     <div className="mt-6 sm:mt-10 w-full sm:w-[90%] md:w-[40%] xl:w-[30%] relative p-4 sm:p-6 lg:p-8">
       <motion.div className="max-w-full mx-auto bg-gradient-to-r from-[#010D3E] to-[#001E80] rounded-lg shadow-lg p-8 relative overflow-hidden">
@@ -356,32 +395,6 @@ export default function Dashboard() {
       </div>
       {/* End Action Buttons */}
     </div>
-    
-    {/* Chart Section */}
-    {/* <div className="mt-6 sm:mt-10 w-full md:w-[60%] xl:w-[50%] p-4">
-      <h2 className="text-lg sm:text-xl font-bold mb-4">Account Balance Over Time</h2>
-      <Line
-        data={{
-          labels:['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-          datasets: [
-            {
-              label: 'Value Over Time',
-              data: [userData.value],
-              // fill: false,
-              backgroundColor: 'rgba(255,159,64,0.4)',
-              borderColor: 'rgba(255,159,64,1)',
-            }, 
-            {
-              label: 'Balance Over Time',
-              data: [userData.balance],
-              // fill: false,
-              backgroundColor: 'rgba(75,192,192,0.4)',
-              borderColor: 'rgba(75,192,192,1)',
-            },
-          ],
-        }}
-      />
-    </div> */}
 
     {/* History Section */}
     <div className="mt-6 sm:mt-10 w-full md:w-2/3 lg:w-1/2 p-4">
@@ -537,9 +550,10 @@ export default function Dashboard() {
 )}
 {/* End Transaction History Modal */}
 
+{/* Send Money Modal */}
 {showSendModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
-    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
+    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md transition-transform transform-gpu hover:scale-105">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Send Money</h2>
       <div className="space-y-4">
         <input
@@ -588,7 +602,7 @@ export default function Dashboard() {
       </div>
       <div className="flex justify-end mt-6 space-x-4">
         <button
-          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300"
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300 transform hover:scale-105"
           onClick={() => handleCloseModal('send')}
         >
           Cancel
@@ -616,41 +630,106 @@ export default function Dashboard() {
   </div>
 )}
 
-{/* Confirmation Modal */}
+{/* Confirmation Send Modal */}
 {showConfirmationModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 sm:p-8 lg:p-20">
-    <div className="bg-white p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-md sm:max-w-sm lg:max-w-lg">
+    <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-md sm:max-w-sm lg:max-w-lg transition-transform transform-gpu hover:scale-105">
+      {/* Header Section */}
       <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">Confirm Transaction</h2>
-      <p className="text-gray-600 mb-6">
-        Are you sure you want to send <strong>${formData.amount}</strong> to account
-        <strong> {formData.receiverAccountNumber}</strong> with a fee rate of
-        <strong> {formData.feeRate}%</strong>?
-      </p>
-      <div className="flex justify-end space-x-4">
+      <div className="mb-4 text-center">
+        <p className="text-sm text-gray-600">Date: <strong className="text-gray-800">{new Date().toLocaleDateString()}</strong></p>
+      </div>
+
+      {/* Invoice-like structure */}
+      <div className="border border-gray-200 rounded-lg p-4 mb-4 shadow-md">
+        <p className="text-gray-700 mb-2">
+          Are you sure you want to send 
+          <span className="text-blue-600 font-bold">
+            <strong> ${Number(formData.amount)}</strong>
+          </span> to account 
+          <strong className="text-blue-600"> {formData.receiverAccountNumber}</strong> with a Fee Rate of 
+          <strong className="text-blue-600"> {formData.feeRate}%</strong>?
+        </p>
+
+        {/* Breakdown of the transaction */}
+        <div className="border-t border-gray-200 pt-2 mt-2">
+          <p className="text-gray-600 mb-1">Transaction Amount:</p>
+          <p className="text-gray-800 font-bold">${formData.amount}</p>
+          
+          <p className="text-gray-600 mb-1">Metabalance Deduction:</p>
+          <p className="text-gray-800 font-bold">${(Number(formData.amount) * (Number(formData.feeRate) / 100))}</p>
+
+          <p className="text-gray-600 mt-2">FeeRate:</p>
+          <strong className="text-gray-800 font-bold"> ${(Number(formData.feeRate))}</strong>
+
+          <hr className='my-2 border-gray-200'/>
+          
+          <div className="flex justify-between">
+            <p className="text-gray-600 mb-1">Total Amount:</p>
+            <p className="flex justify-end text-gray-800 font-bold">
+              <strong> ${Number(formData.amount) + (Number(formData.amount) * (Number(formData.feeRate) / 100))}</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-end space-x-4 mt-4">
         <button
-          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300"
+          className="bg-red-500 text-white py-2 px-6 rounded-lg shadow hover:bg-red-600 transition duration-200 transform hover:scale-105"
           onClick={() => setShowConfirmationModal(false)}
         >
           Cancel
         </button>
         <button
-          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300"
+          className="bg-blue-500 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-600 transition duration-200 transform hover:scale-105"
           onClick={() => {
             handleSendMoney();
             setShowConfirmationModal(false);
           }}
         >
-          Confirm
+          Confirm Send
         </button>
       </div>
     </div>
   </div>
 )}
 
-{/* Deposit Money Modal */}
+{/* Confirm Deposit Modal: Show confirmation before processing deposit */}
+{showConfirmDepositModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
+    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md transition-transform transform-gpu hover:scale-105">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Confirm Deposit</h2>
+      <p className="text-gray-600 mb-6 text-center">
+        Are you sure you want to deposit <strong>${depositData.amount}</strong>?
+      </p>
+      <div className="flex justify-end mt-6 space-x-4">
+        <button
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300 transform hover:scale-105"
+          onClick={() => setShowConfirmDepositModal(false)} // Close confirmation modal
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300 transform hover:scale-105"
+          onClick={handleConfirmDeposit} // Confirm and process deposit
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <div className="spinner"></div>
+          ) : (
+            "Confirm"
+          )}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Deposit Money Modal: Trigger confirmation on click */}
 {showDepositModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
-    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
+    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md transition-transform transform-gpu hover:scale-105">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Deposit Money</h2>
       <div className="space-y-4">
         <input
@@ -659,19 +738,19 @@ export default function Dashboard() {
           placeholder="Amount"
           value={depositData.amount}
           onChange={(e) => handleInputChange(e, setDepositData)}
-          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-green-500"
+          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-green-500 transition duration-200"
         />
       </div>
       <div className="flex justify-end mt-6 space-x-4">
         <button
-          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300"
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300 transform hover:scale-105"
           onClick={() => handleCloseModal('deposit')}
         >
           Cancel
         </button>
         <button
-          className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300 flex items-center justify-center"
-          onClick={handleDeposit}
+          className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300 flex items-center justify-center transform hover:scale-105"
+          onClick={handleDepositButtonClick} // Trigger confirmation modal
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -688,7 +767,7 @@ export default function Dashboard() {
 {/* Withdraw Money Modal */}
 {showWithdrawModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
-    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
+    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md transition-transform transform-gpu hover:scale-105">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Withdraw Money</h2>
       <div className="space-y-4">
         <input
@@ -697,32 +776,56 @@ export default function Dashboard() {
           placeholder="Amount"
           value={withdrawData.amount}
           onChange={(e) => handleInputChange(e, setWithdrawData)}
-          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-red-500"
+          className="border border-gray-300 rounded-lg px-4 py-3 w-full focus:outline-none focus:border-red-500 transition duration-200"
         />
       </div>
       <div className="flex justify-end mt-6 space-x-4">
         <button
-          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300"
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration=300 transform hover:scale=105"
           onClick={() => handleCloseModal('withdraw')}
         >
           Cancel
         </button>
         <button
-          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300 flex items-center justify-center"
-          onClick={handleWithdraw}
+          className={`bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration=300 flex items-center justify-center ${isSubmitting ? 'opacity-50 cursor-notallowed' : ''}`}
+          onClick={() => setShowConfirmWithdrawModal(true)} // Abre el modal de confirmación
           disabled={isSubmitting}
         >
-          {isSubmitting ? (
-            <div className="spinner"></div> 
-          ) : (
-            "Withdraw"
-          )}
+          Withdraw
         </button>
       </div>
     </div>
   </div>
 )}
-    </section>
-    </>
+
+{/* Confirm Withdrawal Modal: Show confirmation before processing withdrawal */}
+{showConfirmWithdrawModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
+    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md transition-transform transform-gpu hover:scale-105">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Confirm Withdrawal</h2>
+      <p className="text-lg text-gray-700 mb-6 text-center">
+        Are you sure you want to withdraw <strong>${withdrawData.amount}</strong>?
+      </p>
+      <div className="flex justify-center space-x-4">
+        <button
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration=300 transform hover:scale=105"
+          onClick={() => setShowConfirmWithdrawModal(false)} // Cierra el modal de confirmación
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration=300 transform hover:scale=105"
+          onClick={handleConfirmWithdraw}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? <div className="spinner"></div> : "Confirm Withdraw"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+  </section>
+</>
   );
 }
