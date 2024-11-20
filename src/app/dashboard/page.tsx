@@ -749,8 +749,8 @@ const handleConfirmDeposit = async () => {
           Cancel
         </button>
         <button
-          className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300 flex items-center justify-center transform hover:scale-105"
-          onClick={handleDepositButtonClick} // Trigger confirmation modal
+          className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300 flex items-center justify-center"
+          onClick={handleDeposit}
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -758,6 +758,67 @@ const handleConfirmDeposit = async () => {
           ) : (
             "Deposit"
           )}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Confirm Deposit Modal: Show confirmation before processing deposit */}
+{showConfirmDepositModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
+    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Confirm Deposit</h2>
+      <p className="text-gray-600 mb-6 text-center">
+        Are you sure you want to deposit <strong>${depositData.amount}</strong>?
+      </p>
+      <div className="flex justify-end mt-6 space-x-4">
+        <button
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300"
+          onClick={() => setShowConfirmDepositModal(false)}  // Close confirmation modal
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-green-600 text-white py-2 px-6 rounded-lg shadow hover:bg-green-700 transition duration-300"
+          onClick={handleConfirmDeposit}  // Confirm and process deposit
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <div className="spinner"></div>
+          ) : (
+            "Confirm"
+          )}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Confirm Withdrawal Modal: Show confirmation before processing withdrawal */}
+{showConfirmWithdrawModal && (
+  <div
+    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3"
+    style={{ zIndex: 9999 }} // Ensures the modal is on top
+  >
+    <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Confirm Withdrawal</h2>
+      <p className="text-lg text-gray-700 mb-6 text-center">
+        Are you sure you want to withdraw ${withdrawData.amount}?
+      </p>
+      <div className="flex justify-center space-x-4">
+        <button
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition duration-300"
+          onClick={() => setShowConfirmWithdrawModal(false)} // Close the confirmation modal
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700"
+          onClick={handleConfirmWithdraw}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? <div className="spinner"></div> : "Confirm Withdraw"}
         </button>
       </div>
     </div>

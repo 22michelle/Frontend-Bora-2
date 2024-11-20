@@ -61,7 +61,7 @@ export const Hero = () => {
             </h1>
             <p className="text-xl text-[#010D3E] tracking-tight mt-6">
               It's the first wallet based on the resilience protocol,
-              Enabling 100%* recouping of base transactions.
+              enabling 100%* recoup of base transactions.
               <br />
               May your connections be stronger!
             </p>
