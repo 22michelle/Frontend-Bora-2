@@ -660,7 +660,7 @@ const handleConfirmDeposit = async () => {
           <p className="text-gray-800 font-bold">${(Number(formData.amount) * (Number(formData.feeRate) / 100))}</p>
 
           <p className="text-gray-600 mt-2">FeeRate:</p>
-          <strong className="text-gray-800 font-bold"> ${(Number(formData.feeRate))}</strong>
+          <strong className="text-gray-800 font-bold"> {(Number(formData.feeRate))}%</strong>
 
           <hr className='my-2 border-gray-200'/>
           
