@@ -53,9 +53,12 @@ export const Hero = () => {
       <div className="container">
         <div className="md:flex md:items-start">
           <div className="md:w-[478px]">
-            <div className="text-sm inline-flex border border-[#222]/10 px-3 py-1 rounded-lg tracking-tight">
-              Version 2.0 is here
-            </div>
+          <div className=" text-lg inline-flex px-4 py-2 rounded-md
+            tracking-tight bg-[#001E80] text-white shadow-md transform transition-all
+            duration-300 hover:scale-105 hover:shadow-lg">
+            Demo 2.0 is here!
+          </div>
+
             <h1 className="text-5xl font-bold tracking-tighter bg-gradient-to-b from-black to-[#001E80] text-transparent bg-clip-text mt-6">
               Bora is not just another wallet!
             </h1>
